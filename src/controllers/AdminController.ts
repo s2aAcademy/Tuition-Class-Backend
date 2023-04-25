@@ -6,6 +6,7 @@ import { User } from "../models";
 import { Role } from "../utility/constants";
 
 import { GenerateSignature, ValidatePassword } from "../utility";
+import { Video } from "../models/Video";
 
 export const AdminLogin = async (
   req: Request,
@@ -186,4 +187,86 @@ export const DeleteUser = async (
   } catch (error) {
     return res.sendStatus(500);
   }
+};
+
+// video
+
+export const AddVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { videoUrl, title, limit } = req.body;
+
+    if (user && user.role === Role.Admin) {
+      const video = await Video.create({
+        videoUrl: videoUrl,
+        title: title,
+        limit: limit,
+      });
+
+      return res.status(201).json({ video: video.videoUrl });
+    }
+    return res.status(400).json({ msg: "Error while Saving Video" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// Get All Videos
+
+export const GetVideos = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const videos = await Video.find();
+
+  if (videos) {
+    return res.status(200).json(videos);
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching Videos" });
+};
+
+// Get  Video Title
+
+export const GetVideoByTitle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const title = req.params.title;
+
+  if (title) {
+    const video = await Video.findOne({ title });
+
+    if (video) {
+      return res.status(200).json(video);
+    }
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching Video" });
+};
+
+// Get  Video Title
+
+export const GetVideoById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+
+  if (id) {
+    const video = await Video.findById(id);
+
+    if (video) {
+      return res.status(200).json(video);
+    }
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching Video" });
 };

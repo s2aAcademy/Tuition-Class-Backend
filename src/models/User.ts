@@ -27,6 +27,7 @@ const UserSchema = new Schema(
       type: String,
       enum: ["Admin", "Student"],
       default: "Student",
+      required: true,
     },
     phone: { type: String, required: true, unique: true },
     paid: { type: Boolean, default: false },

@@ -6,6 +6,10 @@ import {
   ApproveStudent,
   CheckSlip,
   DeleteUser,
+  AddVideo,
+  GetVideos,
+  GetVideoByTitle,
+  GetVideoById,
 } from "../controllers";
 import { Authenticate } from "../middleware";
 
@@ -36,5 +40,21 @@ router.put("/check", CheckSlip);
 /*-------------------- Delete slip ----*/
 
 router.delete("/delete-slip/:id", DeleteUser);
+
+/*-------------------- Add Video ----*/
+
+router.post("/add-video", AddVideo);
+
+/*-------------------- Get All Videos ----*/
+
+router.post("/get-videos", GetVideos);
+
+/*-------------------- Get  Video by title----*/
+
+router.post("/get-video/:title", GetVideoByTitle);
+
+/*-------------------- Get Video by Id ----*/
+
+router.post("/get-video/:id", GetVideoById);
 
 export { router as AdminRoute };
