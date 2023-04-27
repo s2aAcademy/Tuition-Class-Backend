@@ -271,3 +271,27 @@ export const GetVideoById = async (
 
   return res.status(400).json({ msg: "Error while Fetching Video" });
 };
+
+// Delete Video
+
+export const DeleteVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+
+    if (user && user.role === Role.Admin) {
+      const video = await Video.findOneAndDelete({ _id: id });
+
+      if (video) {
+        return res.status(200).json(video);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Deleting Video" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};

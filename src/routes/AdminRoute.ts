@@ -10,6 +10,7 @@ import {
   GetVideos,
   GetVideoByTitle,
   GetVideoById,
+  DeleteVideo,
 } from "../controllers";
 import { Authenticate } from "../middleware";
 
@@ -56,5 +57,9 @@ router.get("/get-video/:title", GetVideoByTitle);
 /*-------------------- Get Video by Id ----*/
 
 router.get("/get-video/:id", GetVideoById);
+
+/*-------------------- Delete Video by Id ----*/
+
+router.delete("/delete-video/:id", DeleteVideo);
 
 export { router as AdminRoute };
