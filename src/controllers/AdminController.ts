@@ -198,12 +198,13 @@ export const AddVideo = async (
 ) => {
   try {
     const user = req.user;
-    const { videoUrl, title, limit } = req.body;
+    const { videoUrl, title, limit, description } = req.body;
 
     if (user && user.role === Role.Admin) {
       const video = await Video.create({
         videoUrl: videoUrl,
         title: title,
+        description: description,
         limit: limit,
       });
 
