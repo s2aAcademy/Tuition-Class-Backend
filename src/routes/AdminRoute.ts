@@ -47,14 +47,14 @@ router.post("/add-video", AddVideo);
 
 /*-------------------- Get All Videos ----*/
 
-router.post("/get-videos", GetVideos);
+router.get("/get-videos", GetVideos);
 
 /*-------------------- Get  Video by title----*/
 
-router.post("/get-video/:title", GetVideoByTitle);
+router.get("/get-video/:title", GetVideoByTitle);
 
 /*-------------------- Get Video by Id ----*/
 
-router.post("/get-video/:id", GetVideoById);
+router.get("/get-video/:id", GetVideoById);
 
 export { router as AdminRoute };
