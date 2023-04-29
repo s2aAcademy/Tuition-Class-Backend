@@ -102,7 +102,13 @@ export const UserLogin = async (
 
       return res.status(200).json({
         signature,
-        email: student.phone,
+        student: {
+          role: student.role,
+          paid: student.paid,
+          classId: student.classId,
+          firstName: student.firstName,
+          lastName: student.lastName,
+        },
       });
     }
   }
