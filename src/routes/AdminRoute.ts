@@ -11,6 +11,8 @@ import {
   GetVideoByTitle,
   GetVideoById,
   DeleteVideo,
+  Counter,
+  ResetCounter,
 } from "../controllers";
 import { Authenticate } from "../middleware";
 
@@ -61,5 +63,13 @@ router.get("/get-video/:id", GetVideoById);
 /*-------------------- Delete Video by Id ----*/
 
 router.delete("/delete-video/:id", DeleteVideo);
+
+/*-------------------- Get Counter  ----*/
+
+router.get("/counter", Counter);
+
+/*-------------------- Get Video by Id ----*/
+
+router.get("/reset-counter", ResetCounter);
 
 export { router as AdminRoute };

@@ -6,7 +6,7 @@ import {
   EditCustomerProfileInput,
   UserLoginInput,
 } from "../dto";
-import { User } from "../models";
+import { User, Counters } from "../models";
 
 import {
   GeneratePassword,
@@ -15,12 +15,15 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
+const mongoose = require("mongoose");
 
 export const UserSignUp = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const session = await mongoose.startSession();
+
   const customerInputs = plainToClass(CreateCustomerInput, req.body);
 
   const validationError = await validate(customerInputs, {
@@ -37,23 +40,30 @@ export const UserSignUp = async (
   const salt = await GenerateSalt();
   const userPassword = await GeneratePassword(password, salt);
 
-  const existingUser = await User.findOne({ phone: phone });
+  const existingUser = await User.findOne({ phone: phone }).session(session);
 
   if (existingUser !== null) {
     return res.status(400).json({ message: "User already exist!" });
   }
 
-  const result = await User.create({
-    email: email,
-    password: userPassword,
-    phone: phone,
-    salt: salt,
-    firstName: firstName,
-    lastName: lastName,
-    classId: classId,
-    slip: slip,
-    role: role,
-  });
+  const result = await User.create(
+    {
+      email: email,
+      password: userPassword,
+      phone: phone,
+      salt: salt,
+      firstName: firstName,
+      lastName: lastName,
+      classId: classId,
+      slip: slip,
+      role: role,
+    },
+    {
+      session,
+    }
+  );
+
+  await session.commitTransaction();
 
   if (result) {
     //Generate the Signature
@@ -85,6 +95,7 @@ export const UserLogin = async (
   }
 
   const { email, password } = customerInputs;
+
   const student = await User.findOne({ email });
   if (student && student?.role === Role.Student) {
     const validation = await ValidatePassword(
