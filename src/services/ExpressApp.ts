@@ -4,8 +4,10 @@ const cors = require("cors");
 
 import { UserRoute, AdminRoute } from "../routes";
 import { WebHookRoute } from "../routes/WebHookRoute";
+var xhub = require("express-x-hub");
 
 async function App(app: Application) {
+  app.use(xhub({ algorithm: "sha1", secret: "s2aacademy" }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 

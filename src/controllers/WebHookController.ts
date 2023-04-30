@@ -8,10 +8,10 @@ export const verifyHook = (req, res, next: NextFunction) => {
   const myToken = "s2aacademy";
 
   if (mode && token) {
-    if (mode === "subcribe" && token === myToken) {
-      res.status(200).send(challenge);
+    if (mode === "subscribe" && token === myToken) {
+      return res.status(200).send(challenge);
     } else {
-      res.status(403);
+      return res.status(403);
     }
   }
 };
