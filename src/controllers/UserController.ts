@@ -15,6 +15,7 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
+import { sendMail } from "../services/MailService";
 
 export const UserSignUp = async (
   req: Request,
@@ -37,7 +38,9 @@ export const UserSignUp = async (
   const salt = await GenerateSalt();
   const userPassword = await GeneratePassword(password, salt);
 
-  const existingUser = await User.findOne({ phone: phone });
+  const existingUser = await User.findOne({
+    $or: [{ phone: phone }, { email: email }, { classId: classId }],
+  });
 
   if (existingUser !== null) {
     return res.status(400).json({ message: "User already exist!" });
@@ -87,6 +90,8 @@ export const UserLogin = async (
   const { email, password } = customerInputs;
   const student = await User.findOne({ email });
   if (student && student?.role === Role.Student) {
+   // await sendMail();
+
     const validation = await ValidatePassword(
       password,
       student.password,
