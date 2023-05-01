@@ -9,17 +9,17 @@ export interface CounterDoc extends Document {
 const CounterSchema = new Schema(
   {
     c: {
-      default: 0o1,
+      default: 220,
       type: Number,
       unique: true,
     },
     p: {
-      default: 0o1,
+      default: 285,
       type: Number,
       unique: true,
     },
     cp: {
-      default: 0o1,
+      default: 620,
       type: Number,
       unique: true,
     },

@@ -24,48 +24,109 @@ export const UserSignUp = async (
 ) => {
   const session = await mongoose.startSession();
 
-  const customerInputs = plainToClass(CreateCustomerInput, req.body);
+  try {
+    const customerInputs = plainToClass(CreateCustomerInput, req.body);
 
-  const validationError = await validate(customerInputs, {
-    validationError: { target: true },
-  });
+    const validationError = await validate(customerInputs, {
+      validationError: { target: true },
+    });
 
-  if (validationError.length > 0) {
-    return res.status(400).json(validationError);
-  }
+    if (validationError.length > 0) {
+      return res.status(400).json(validationError);
+    }
 
-  const { firstName, lastName, phone, password, classId, slip, role, email } =
-    customerInputs;
+    const {
+      firstName,
+      lastName,
+      phone,
+      password,
+      classId,
+      slip,
+      role,
+      email,
+      state,
+      classType,
+    } = customerInputs;
 
-  const salt = await GenerateSalt();
-  const userPassword = await GeneratePassword(password, salt);
+    session.startTransaction();
 
-  const existingUser = await User.findOne({ phone: phone }).session(session);
+    const itemIds = await Counters.find().session(session);
 
-  if (existingUser !== null) {
-    return res.status(400).json({ message: "User already exist!" });
-  }
+    let class_id: string;
 
-  const result = await User.create(
-    {
+    if (state === "nonRegistered") {
+      if (classType === "chemistry") {
+        class_id = "c" + "23_" + itemIds[0].c;
+      }
+      if (classType === "physics") {
+        class_id = "p" + "23_" + itemIds[0].p;
+      }
+      if (classType === "both") {
+        class_id = "cp" + "23_" + itemIds[0].cp;
+      }
+    } else {
+      class_id = classId;
+    }
+
+    const salt = await GenerateSalt();
+    const userPassword = await GeneratePassword(password, salt);
+
+    const existingUser = await User.findOne({ phone: phone }).session(session);
+
+    if (existingUser !== null) {
+      return res.status(400).json({ message: "User already exist!" });
+    }
+
+    const user = new User({
       email: email,
       password: userPassword,
       phone: phone,
       salt: salt,
       firstName: firstName,
       lastName: lastName,
-      classId: classId,
+      classId: class_id,
       slip: slip,
       role: role,
-    },
-    {
-      session,
+    });
+
+    const result = await user.save({ session });
+
+    if (classType === "chemistry") {
+      await Counters.findByIdAndUpdate(
+        itemIds[0]._id,
+        {
+          $inc: {
+            c: 1,
+          },
+        },
+        { new: true, session }
+      );
     }
-  );
 
-  await session.commitTransaction();
+    if (classType === "physics") {
+      await Counters.findByIdAndUpdate(
+        itemIds[0]._id,
+        {
+          $inc: {
+            p: 1,
+          },
+        },
+        { new: true, session }
+      );
+    }
 
-  if (result) {
+    if (classType === "both") {
+      await Counters.findByIdAndUpdate(
+        itemIds[0]._id,
+        {
+          $inc: {
+            cp: 1,
+          },
+        },
+        { new: true, session }
+      );
+    }
+
     //Generate the Signature
     const signature = await GenerateSignature({
       _id: result._id,
@@ -73,10 +134,13 @@ export const UserSignUp = async (
       role: result.role,
     });
     // Send the result
+    await session.commitTransaction();
+    session.endSession();
     return res.status(201).json({ signature, phone: result.phone });
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
   }
-
-  return res.status(400).json({ msg: "Error while creating user" });
 };
 
 export const UserLogin = async (

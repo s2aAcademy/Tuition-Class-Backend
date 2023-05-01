@@ -18,6 +18,14 @@ import { Authenticate } from "../middleware";
 
 const router = express.Router();
 
+/*-------------------- Get Counter  ----*/
+
+router.get("/counter", Counter);
+
+/*-------------------- Get Video by Id ----*/
+
+router.get("/reset-counter", ResetCounter);
+
 /* ------------------- Login --------------------- */
 router.post("/login", AdminLogin);
 
@@ -63,13 +71,5 @@ router.get("/get-video/:id", GetVideoById);
 /*-------------------- Delete Video by Id ----*/
 
 router.delete("/delete-video/:id", DeleteVideo);
-
-/*-------------------- Get Counter  ----*/
-
-router.get("/counter", Counter);
-
-/*-------------------- Get Video by Id ----*/
-
-router.get("/reset-counter", ResetCounter);
 
 export { router as AdminRoute };

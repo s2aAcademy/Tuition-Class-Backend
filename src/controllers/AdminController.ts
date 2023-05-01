@@ -327,9 +327,9 @@ export const ResetCounter = async (
   try {
     await Counters.deleteMany({});
     const counter = new Counters({
-      c: 1,
-      p: 1,
-      cp: 1,
+      c: 220,
+      p: 285,
+      cp: 620,
     });
     await counter.save();
     res.sendStatus(200);
