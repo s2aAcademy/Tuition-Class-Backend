@@ -2,19 +2,14 @@ import { IsEmail, Length, isEmail } from "class-validator";
 import { Role } from "../utility/constants";
 
 export class CreateCustomerInput {
-
   email: string;
-
 
   phone: string;
 
-
   firstName: string;
 
-  
   lastName: string;
 
- 
   password: string;
 
   classId: string;
@@ -24,23 +19,23 @@ export class CreateCustomerInput {
   role: string;
 
   userName: string;
+
+  state: string;
+
+  classType: string;
 }
 
 export class UserLoginInput {
-  
   email: string;
-  
+
   password: string;
 }
 
 export class EditCustomerProfileInput {
-  @Length(3, 16)
   firstName: string;
 
-  @Length(3, 16)
   lastName: string;
 
-  @Length(6, 16)
   address: string;
 }
 

@@ -15,21 +15,21 @@ interface UserDoc extends Document {
 
 const UserSchema = new Schema(
   {
-    password: { type: String, required: true },
-    salt: { type: String, required: true },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    classId: { type: String, required: true, unique: true },
+    password: { type: String },
+    salt: { type: String },
+    firstName: { type: String },
+    lastName: { type: String },
+    classId: { type: String, unique: true },
     checked: { type: Boolean, default: false },
-    email: { type: String, required: true },
-    slip: { type: String, required: true },
+    email: { type: String },
+    slip: { type: String },
     role: {
       type: String,
       enum: ["Admin", "Student"],
       default: "Student",
       required: true,
     },
-    phone: { type: String, required: true, unique: true },
+    phone: { type: String, unique: true },
     paid: { type: Boolean, default: false },
   },
   {

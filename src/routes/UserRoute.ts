@@ -4,7 +4,7 @@ import { Authenticate } from "../middleware";
 
 const router = express.Router();
 
-/* ------------------- Suignup / Create Customer --------------------- */
+/* ------------------- SignUp / Create Customer --------------------- */
 router.post("/signup", UserSignUp);
 
 /* ------------------- Login --------------------- */

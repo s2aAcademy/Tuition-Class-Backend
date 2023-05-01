@@ -7,6 +7,7 @@ import { Role } from "../utility/constants";
 
 import { GenerateSignature, ValidatePassword } from "../utility";
 import { Video } from "../models/Video";
+import { Counters } from "../models/Counter";
 
 export const AdminLogin = async (
   req: Request,
@@ -293,5 +294,46 @@ export const DeleteVideo = async (
     return res.status(400).json({ msg: "Error while Deleting Video" });
   } catch (error) {
     return res.sendStatus(500);
+  }
+};
+
+// counter
+
+export const Counter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const counter = await Counters.find();
+    res.status(200).json({
+      id: counter[0].id,
+      c: counter[0].c,
+      p: counter[0].p,
+      cp: counter[0].cp,
+    });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+//reset counter
+
+export const ResetCounter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await Counters.deleteMany({});
+    const counter = new Counters({
+      c: 220,
+      p: 285,
+      cp: 620,
+    });
+    await counter.save();
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
   }
 };

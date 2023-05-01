@@ -4,6 +4,8 @@ const cors = require("cors");
 
 import { UserRoute, AdminRoute } from "../routes";
 
+var xhub = require("express-x-hub");
+
 async function App(app: Application) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

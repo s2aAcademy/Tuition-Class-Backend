@@ -11,10 +11,20 @@ import {
   GetVideoByTitle,
   GetVideoById,
   DeleteVideo,
+  Counter,
+  ResetCounter,
 } from "../controllers";
 import { Authenticate } from "../middleware";
 
 const router = express.Router();
+
+/*-------------------- Get Counter  ----*/
+
+router.get("/counter", Counter);
+
+/*-------------------- Get Video by Id ----*/
+
+router.get("/reset-counter", ResetCounter);
 
 /* ------------------- Login --------------------- */
 router.post("/login", AdminLogin);
