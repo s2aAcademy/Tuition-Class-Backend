@@ -15,7 +15,7 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
-import { sendMail } from "../services/MailService";
+//import { sendMail } from "../services/MailService";
 import { Video } from "../models/Video";
 const mongoose = require("mongoose");
 
@@ -138,7 +138,7 @@ export const UserSignUp = async (
     // Send the result
     await session.commitTransaction();
     session.endSession();
-    await sendMail();
+    //await sendMail();
     return res.status(201).json({ signature, phone: result.phone });
   } catch (err) {
     console.log(err);
