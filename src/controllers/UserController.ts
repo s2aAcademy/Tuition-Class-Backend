@@ -15,6 +15,8 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
+import { sendMail } from "../services/MailService";
+import { Video } from "../models/Video";
 const mongoose = require("mongoose");
 
 export const UserSignUp = async (
@@ -136,6 +138,7 @@ export const UserSignUp = async (
     // Send the result
     await session.commitTransaction();
     session.endSession();
+    await sendMail();
     return res.status(201).json({ signature, phone: result.phone });
   } catch (err) {
     console.log(err);
@@ -162,7 +165,7 @@ export const UserLogin = async (
 
   const student = await User.findOne({ email });
   if (student && student?.role === Role.Student) {
-   // await sendMail();
+    // await sendMail();
 
     const validation = await ValidatePassword(
       password,
@@ -242,4 +245,19 @@ export const EditCustomerProfile = async (
     }
   }
   return res.status(400).json({ msg: "Error while Updating Profile" });
+};
+
+// Get  Video By LessonId
+export const GetVideosByLessonId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const lessonId = req.params.lessonId;
+
+  if (lessonId) {
+    const videos = await Video.find({ lessonId });
+    return res.status(200).json(videos);
+  }
+  return res.status(400).json({ msg: "Error while Fetching Video" });
 };
