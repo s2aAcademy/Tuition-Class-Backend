@@ -11,6 +11,7 @@ interface UserDoc extends Document {
   slip: String;
   role: String;
   email: String;
+  address: String;
 }
 
 const UserSchema = new Schema(

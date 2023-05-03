@@ -42,7 +42,7 @@ export class EditCustomerProfileInput {
 export interface CustomerPayload {
   _id: string;
   phone: string;
-  role: Role;
+  role: Role | String;
 }
 
 export class CartItem {
