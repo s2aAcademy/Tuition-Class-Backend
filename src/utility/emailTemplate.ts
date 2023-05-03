@@ -37,8 +37,8 @@ export const emailTemplate = (regNo: string) => {
         <td>
           <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#e8eaed;margin:20px 0" />
           <p style="font-size:14px;line-height:26px;margin:16px 0;font-weight:700;color:#004dcf">Successfully Registered</p>
-          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">Welcome to S2Academy,</p>
-          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">"Here's your class ID".</p>
+          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">Welcome to S2A Academy,</p>
+          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">This is your class ID.</p>
         </td>
       </tr>
     </tbody>
@@ -52,7 +52,7 @@ export const emailTemplate = (regNo: string) => {
           <pre
             style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"">
  <p style=" font-size:14px;line-height:1px;margin:0 0 1px
-            0;text-align:left">Registration No         : <strong>  ${regNo}</strong></p>
+            0;text-align:left">Class ID : <strong>  ${regNo}</strong></p>
                 </pre>
         </td>
       </tr>
