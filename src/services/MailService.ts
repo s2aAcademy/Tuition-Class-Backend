@@ -2,35 +2,35 @@
 import nodemailer from "nodemailer";
 import { emailTemplate } from "../utility/emailTemplate";
 
-export async function sendMail() {
+export async function sendMail(email:string,id:string) {
  
-  let testAccount = await nodemailer.createTestAccount();
-
-  // let transporter = nodemailer.createTransport({
-  //   host: "smtp.gmail.com",
-  //   port: 465,
-  //   secure: true, // upgrade later with STARTTLS
-  //   auth: {
-  //     user: "s2aacademy@gmail.com", // generated ethereal user
-  //     pass: "Ushan@s2aacademy", // generated ethereal password
-  //   },
-  // });
+  //let testAccount = await nodemailer.createTestAccount();
 
   let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // upgrade later with STARTTLS
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: "s2aacademy@gmail.com", // generated ethereal user
+      pass: "pshmmqeaubuektci", // generated ethereal password
     },
   });
 
+  // let transporter = nodemailer.createTransport({
+  //   host: "smtp.ethereal.email",
+  //   port: 587,
+  //   secure: false, // true for 465, false for other ports
+  //   auth: {
+  //     user: testAccount.user, // generated ethereal user
+  //     pass: testAccount.pass, // generated ethereal password
+  //   },
+  // });
+
   let info = await transporter.sendMail({
     from: "s2aacademy@gmail.com", // sender address
-    to: "nuwandeshapriyaaa@gmail.com", // list of receivers
+    to: email, // list of receivers
     subject: "Registration", // Subject line// plain text body
-    html: emailTemplate("test"), // html body
+    html: emailTemplate(id), // html body
   });
 
   console.log("Message sent: %s", info.messageId);

@@ -15,9 +15,19 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
-//import { sendMail } from "../services/MailService";
+import { sendMail } from "../services/MailService";
 import { Video } from "../models/Video";
 const mongoose = require("mongoose");
+
+export const sendEmailFunc = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, classId } = req.body;
+  sendMail(email, classId);
+  return res.status(200).json({ message: "Email Sent" });
+};
 
 export const UserSignUp = async (
   req: Request,
@@ -138,8 +148,15 @@ export const UserSignUp = async (
     // Send the result
     await session.commitTransaction();
     session.endSession();
-    //await sendMail();
-    return res.status(201).json({ signature, phone: result.phone });
+
+    return res
+      .status(201)
+      .json({
+        signature,
+        phone: result.phone,
+        classId: result.classId,
+        email: result.email,
+      });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);
@@ -165,8 +182,6 @@ export const UserLogin = async (
 
   const student = await User.findOne({ email });
   if (student && student?.role === Role.Student) {
-    // await sendMail();
-
     const validation = await ValidatePassword(
       password,
       student.password,

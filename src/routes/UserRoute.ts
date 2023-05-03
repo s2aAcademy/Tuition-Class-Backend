@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import { UserSignUp, UserLogin, GetVideosByLessonId } from "../controllers/UserController";
+import { UserSignUp, UserLogin, GetVideosByLessonId, sendEmailFunc } from "../controllers/UserController";
 import { Authenticate } from "../middleware";
 import { getChemistryLessons, getPhysicsLessons } from "../controllers/LessonController";
 import { createOrupdateWatchTime, getWatchTimeByVideoId } from "../controllers/WatchTimeController";
@@ -26,6 +26,9 @@ router.post("/create-or-update-watch-time",createOrupdateWatchTime)
 
 /* ------------------- get watch time by video id --------------------- */
 router.get("/get-watch-time/:videoId/:userId",getWatchTimeByVideoId)
+
+/* -----------------send email --------------------- */
+router.post("/send-email", sendEmailFunc);
 
 export { router as UserRoute };
 
