@@ -15,6 +15,7 @@ import {
   ResetCounter,
 } from "../controllers";
 import { Authenticate } from "../middleware";
+import { createLesson } from "../controllers/LessonController";
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.get("/reset-counter", ResetCounter);
 router.post("/login", AdminLogin);
 
 /* ------------------- Authentication --------------------- */
-router.use(Authenticate);
+//router.use(Authenticate);
 
 /*-------------------- Get All Student details ----*/
 
@@ -71,5 +72,8 @@ router.get("/get-video/:id", GetVideoById);
 /*-------------------- Delete Video by Id ----*/
 
 router.delete("/delete-video/:id", DeleteVideo);
+
+/*-------------------- create lesson ----*/
+router.post("/create-lesson", createLesson);
 
 export { router as AdminRoute };

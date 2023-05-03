@@ -15,7 +15,19 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
+import { sendMail } from "../services/MailService";
+import { Video } from "../models/Video";
 const mongoose = require("mongoose");
+
+export const sendEmailFunc = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, classId } = req.body;
+  sendMail(email, classId);
+  return res.status(200).json({ message: "Email Sent" });
+};
 
 export const UserSignUp = async (
   req: Request,
@@ -136,7 +148,15 @@ export const UserSignUp = async (
     // Send the result
     await session.commitTransaction();
     session.endSession();
-    return res.status(201).json({ signature, phone: result.phone });
+
+    return res
+      .status(201)
+      .json({
+        signature,
+        phone: result.phone,
+        classId: result.classId,
+        email: result.email,
+      });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);
@@ -240,4 +260,19 @@ export const EditCustomerProfile = async (
     }
   }
   return res.status(400).json({ msg: "Error while Updating Profile" });
+};
+
+// Get  Video By LessonId
+export const GetVideosByLessonId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const lessonId = req.params.lessonId;
+
+  if (lessonId) {
+    const videos = await Video.find({ lessonId });
+    return res.status(200).json(videos);
+  }
+  return res.status(400).json({ msg: "Error while Fetching Video" });
 };

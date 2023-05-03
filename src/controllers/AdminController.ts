@@ -198,20 +198,21 @@ export const AddVideo = async (
   next: NextFunction
 ) => {
   try {
-    const user = req.user;
-    const { videoUrl, title, limit, description } = req.body;
+    // const user = req.user;
+    const { videoUrl, title, limit, description, lessonId } = req.body;
 
-    if (user && user.role === Role.Admin) {
-      const video = await Video.create({
-        videoUrl: videoUrl,
-        title: title,
-        description: description,
-        limit: limit,
-      });
+    //  if (user && user.role === Role.Admin) {
+    const video = await Video.create({
+      videoUrl: videoUrl,
+      title: title,
+      description: description,
+      limit: limit,
+      lessonId: lessonId,
+    });
 
-      return res.status(201).json({ video: video.videoUrl });
-    }
-    return res.status(400).json({ msg: "Error while Saving Video" });
+    return res.status(201).json({ video: video.videoUrl });
+    //  }
+    // return res.status(400).json({ msg: "Error while Saving Video" });
   } catch (error) {
     return res.sendStatus(500);
   }
@@ -232,6 +233,7 @@ export const GetVideos = async (
 
   return res.status(400).json({ msg: "Error while Fetching Videos" });
 };
+
 
 // Get  Video Title
 
