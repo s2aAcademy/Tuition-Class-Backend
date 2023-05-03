@@ -24,9 +24,14 @@ export const sendEmailFunc = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, classId } = req.body;
-  sendMail(email, classId);
-  return res.status(200).json({ message: "Email Sent" });
+  try {
+    const { email, classId } = req.body;
+    console.log("email", email);
+    await sendMail(email, classId);
+    return res.status(200).json({ message: "Email Sent" });
+  } catch (err) {
+    return res.sendStatus(500);
+  }
 };
 
 export const UserSignUp = async (
@@ -149,14 +154,12 @@ export const UserSignUp = async (
     await session.commitTransaction();
     session.endSession();
 
-    return res
-      .status(201)
-      .json({
-        signature,
-        phone: result.phone,
-        classId: result.classId,
-        email: result.email,
-      });
+    return res.status(201).json({
+      signature,
+      phone: result.phone,
+      classId: result.classId,
+      email: result.email,
+    });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);

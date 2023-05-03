@@ -11,7 +11,7 @@ export async function sendMail(email: string, id: string) {
     secure: true, // upgrade later with STARTTLS
     auth: {
       user: "s2aacademy@gmail.com", // generated ethereal user
-      pass: process.env.Email_Pass, // generated ethereal password
+      pass: "pshmmqeaubuektci", // generated ethereal password
     },
   });
 
