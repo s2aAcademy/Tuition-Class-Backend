@@ -6,7 +6,7 @@ import {
   EditCustomerProfileInput,
   UserLoginInput,
 } from "../dto";
-import { User } from "../models";
+import { User, Counters } from "../models";
 
 import {
   GeneratePassword,
@@ -15,47 +15,130 @@ import {
   ValidatePassword,
 } from "../utility";
 import { Role } from "../utility/constants";
+import { sendMail } from "../services/MailService";
+import { Video } from "../models/Video";
+const mongoose = require("mongoose");
+
+export const sendEmailFunc = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, classId } = req.body;
+  await sendMail(email, classId);
+  return res.status(200).json({ message: "Email Sent" });
+};
 
 export const UserSignUp = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const customerInputs = plainToClass(CreateCustomerInput, req.body);
+  const session = await mongoose.startSession();
 
-  const validationError = await validate(customerInputs, {
-    validationError: { target: true },
-  });
+  try {
+    const customerInputs = plainToClass(CreateCustomerInput, req.body);
 
-  if (validationError.length > 0) {
-    return res.status(400).json(validationError);
-  }
+    const validationError = await validate(customerInputs, {
+      validationError: { target: true },
+    });
 
-  const { firstName, lastName, phone, password, classId, slip, role, email } =
-    customerInputs;
+    if (validationError.length > 0) {
+      return res.status(400).json(validationError);
+    }
 
-  const salt = await GenerateSalt();
-  const userPassword = await GeneratePassword(password, salt);
+    const {
+      firstName,
+      lastName,
+      phone,
+      password,
+      classId,
+      slip,
+      role,
+      email,
+      state,
+      classType,
+    } = customerInputs;
 
-  const existingUser = await User.findOne({ phone: phone });
+    session.startTransaction();
 
-  if (existingUser !== null) {
-    return res.status(400).json({ message: "User already exist!" });
-  }
+    const itemIds = await Counters.find().session(session);
 
-  const result = await User.create({
-    email: email,
-    password: userPassword,
-    phone: phone,
-    salt: salt,
-    firstName: firstName,
-    lastName: lastName,
-    classId: classId,
-    slip: slip,
-    role: role,
-  });
+    let class_id: string;
 
-  if (result) {
+    if (state === "nonRegistered") {
+      if (classType === "chemistry") {
+        class_id = "c" + "23_" + itemIds[0].c;
+      }
+      if (classType === "physics") {
+        class_id = "p" + "23_" + itemIds[0].p;
+      }
+      if (classType === "both") {
+        class_id = "cp" + "23_" + itemIds[0].cp;
+      }
+    } else {
+      class_id = classId;
+    }
+
+    const salt = await GenerateSalt();
+    const userPassword = await GeneratePassword(password, salt);
+
+    const existingUser = await User.findOne({ phone: phone }).session(session);
+
+    if (existingUser !== null) {
+      return res.status(400).json({ message: "User already exist!" });
+    }
+
+    const user = new User({
+      email: email,
+      password: userPassword,
+      phone: phone,
+      salt: salt,
+      firstName: firstName,
+      lastName: lastName,
+      classId: class_id,
+      slip: slip,
+      role: role,
+    });
+
+    const result = await user.save({ session });
+
+    if (classType === "chemistry") {
+      await Counters.findByIdAndUpdate(
+        itemIds[0]._id,
+        {
+          $inc: {
+            c: 1,
+          },
+        },
+        { new: true, session }
+      );
+    }
+
+    if (classType === "physics") {
+      await Counters.findByIdAndUpdate(
+        itemIds[0]._id,
+        {
+          $inc: {
+            p: 1,
+          },
+        },
+        { new: true, session }
+      );
+    }
+
+    if (classType === "both") {
+      await Counters.findByIdAndUpdate(
+        itemIds[0]._id,
+        {
+          $inc: {
+            cp: 1,
+          },
+        },
+        { new: true, session }
+      );
+    }
+    
     //Generate the Signature
     const signature = await GenerateSignature({
       _id: result._id,
@@ -63,10 +146,21 @@ export const UserSignUp = async (
       role: result.role,
     });
     // Send the result
-    return res.status(201).json({ signature, phone: result.phone });
-  }
+    await session.commitTransaction();
+    session.endSession();
 
-  return res.status(400).json({ msg: "Error while creating user" });
+    return res
+      .status(201)
+      .json({
+        signature,
+        phone: result.phone,
+        classId: result.classId,
+        email: result.email,
+      });
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
 };
 
 export const UserLogin = async (
@@ -85,6 +179,7 @@ export const UserLogin = async (
   }
 
   const { email, password } = customerInputs;
+
   const student = await User.findOne({ email });
   if (student && student?.role === Role.Student) {
     const validation = await ValidatePassword(
@@ -165,4 +260,19 @@ export const EditCustomerProfile = async (
     }
   }
   return res.status(400).json({ msg: "Error while Updating Profile" });
+};
+
+// Get  Video By LessonId
+export const GetVideosByLessonId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const lessonId = req.params.lessonId;
+
+  if (lessonId) {
+    const videos = await Video.find({ lessonId });
+    return res.status(200).json(videos);
+  }
+  return res.status(400).json({ msg: "Error while Fetching Video" });
 };

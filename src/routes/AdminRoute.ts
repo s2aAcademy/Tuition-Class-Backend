@@ -11,16 +11,27 @@ import {
   GetVideoByTitle,
   GetVideoById,
   DeleteVideo,
+  Counter,
+  ResetCounter,
 } from "../controllers";
 import { Authenticate } from "../middleware";
+import { createLesson } from "../controllers/LessonController";
 
 const router = express.Router();
+
+/*-------------------- Get Counter  ----*/
+
+router.get("/counter", Counter);
+
+/*-------------------- Get Video by Id ----*/
+
+router.get("/reset-counter", ResetCounter);
 
 /* ------------------- Login --------------------- */
 router.post("/login", AdminLogin);
 
 /* ------------------- Authentication --------------------- */
-router.use(Authenticate);
+//router.use(Authenticate);
 
 /*-------------------- Get All Student details ----*/
 
@@ -61,5 +72,8 @@ router.get("/get-video/:id", GetVideoById);
 /*-------------------- Delete Video by Id ----*/
 
 router.delete("/delete-video/:id", DeleteVideo);
+
+/*-------------------- create lesson ----*/
+router.post("/create-lesson", createLesson);
 
 export { router as AdminRoute };

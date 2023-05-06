@@ -1,8 +1,9 @@
 import express, { Application } from "express";
 import path from "path";
 const cors = require("cors");
-
 import { UserRoute, AdminRoute } from "../routes";
+
+var xhub = require("express-x-hub");
 
 async function App(app: Application) {
   app.use(express.json());
@@ -18,6 +19,7 @@ async function App(app: Application) {
 
   app.use("/admin", AdminRoute);
   app.use("/user", UserRoute);
+
 
   return app;
 }
