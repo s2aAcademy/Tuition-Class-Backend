@@ -2,18 +2,18 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 import { Refer } from "twilio/lib/twiml/VoiceResponse";
 
 export enum MonthEnum {
-  JANUARY = "january",
-  FEBRUARY = "february",
-  MARCH = "march",
-  APRIL = "april",
-  MAY = "may",
-  JUNE = "june",
-  JULY = "july",
-  AUGUST = "august",
-  SEPTEMBER = "september",
-  OCTOBER = "october",
-  NOVEMBER = "november",
-  DECEMBER = "december",
+  JANUARY = 1,
+  FEBRUARY = 2,
+  MARCH = 3,
+  APRIL = 4,
+  MAY = 5,
+  JUNE = 6,
+  JULY = 7,
+  AUGUST = 8,
+  SEPTEMBER = 9,
+  OCTOBER = 10,
+  NOVEMBER = 11,
+  DECEMBER = 12,
 }
 
 export enum PaymentStatusEnum {
