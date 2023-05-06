@@ -25,7 +25,7 @@ export const sendEmailFunc = async (
   next: NextFunction
 ) => {
   const { email, classId } = req.body;
-  sendMail(email, classId);
+  await sendMail(email, classId);
   return res.status(200).json({ message: "Email Sent" });
 };
 
@@ -138,7 +138,7 @@ export const UserSignUp = async (
         { new: true, session }
       );
     }
-
+    
     //Generate the Signature
     const signature = await GenerateSignature({
       _id: result._id,
