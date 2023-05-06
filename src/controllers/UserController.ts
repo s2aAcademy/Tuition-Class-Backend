@@ -99,10 +99,12 @@ export const UserSignUp = async (
       classId: class_id,
       slip: slip,
       role: role,
+      classType: classType,
     });
 
     const result = await user.save({ session });
 
+    if (state === "nonRegistered") {
     if (classType === "chemistry") {
       await Counters.findByIdAndUpdate(
         itemIds[0]._id,
@@ -138,7 +140,7 @@ export const UserSignUp = async (
         { new: true, session }
       );
     }
-    
+  }
     //Generate the Signature
     const signature = await GenerateSignature({
       _id: result._id,
@@ -203,6 +205,10 @@ export const UserLogin = async (
           classId: student.classId,
           firstName: student.firstName,
           lastName: student.lastName,
+          _id: student._id,
+          phone: student.phone,
+          email: student.email,
+          classType: student.classType || "none",
         },
       });
     }
