@@ -26,7 +26,6 @@ export const sendEmailFunc = async (
 ) => {
   try {
     const { email, classId } = req.body;
-    console.log("email", email);
     await sendMail(email, classId);
     return res.status(200).json({ message: "Email Sent" });
   } catch (err) {
@@ -104,46 +103,48 @@ export const UserSignUp = async (
       classId: class_id,
       slip: slip,
       role: role,
+      classType: classType,
     });
 
     const result = await user.save({ session });
 
-    if (classType === "chemistry") {
-      await Counters.findByIdAndUpdate(
-        itemIds[0]._id,
-        {
-          $inc: {
-            c: 1,
+    if (state === "nonRegistered") {
+      if (classType === "chemistry") {
+        await Counters.findByIdAndUpdate(
+          itemIds[0]._id,
+          {
+            $inc: {
+              c: 1,
+            },
           },
-        },
-        { new: true, session }
-      );
-    }
+          { new: true, session }
+        );
+      }
 
-    if (classType === "physics") {
-      await Counters.findByIdAndUpdate(
-        itemIds[0]._id,
-        {
-          $inc: {
-            p: 1,
+      if (classType === "physics") {
+        await Counters.findByIdAndUpdate(
+          itemIds[0]._id,
+          {
+            $inc: {
+              p: 1,
+            },
           },
-        },
-        { new: true, session }
-      );
-    }
+          { new: true, session }
+        );
+      }
 
-    if (classType === "both") {
-      await Counters.findByIdAndUpdate(
-        itemIds[0]._id,
-        {
-          $inc: {
-            cp: 1,
+      if (classType === "both") {
+        await Counters.findByIdAndUpdate(
+          itemIds[0]._id,
+          {
+            $inc: {
+              cp: 1,
+            },
           },
-        },
-        { new: true, session }
-      );
+          { new: true, session }
+        );
+      }
     }
-
     //Generate the Signature
     const signature = await GenerateSignature({
       _id: result._id,
@@ -206,6 +207,10 @@ export const UserLogin = async (
           classId: student.classId,
           firstName: student.firstName,
           lastName: student.lastName,
+          _id: student._id,
+          phone: student.phone,
+          email: student.email,
+          classType: student.classType || "none",
         },
       });
     }

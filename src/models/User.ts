@@ -12,6 +12,7 @@ interface UserDoc extends Document {
   role: String;
   email: String;
   address: String;
+  classType: String;
 }
 
 const UserSchema = new Schema(
@@ -32,6 +33,11 @@ const UserSchema = new Schema(
     },
     phone: { type: String, unique: true },
     paid: { type: Boolean, default: false },
+    classType: {
+      type: String,
+      enum: ["physics", "chemistry", "both"],
+      default: null,
+    },
   },
   {
     toJSON: {
