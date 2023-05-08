@@ -17,6 +17,7 @@ import {
 import { Role } from "../utility/constants";
 import { sendMail } from "../services/MailService";
 import { Video } from "../models/Video";
+import { WatchTime } from "../models/WatchTime";
 const mongoose = require("mongoose");
 
 export const sendEmailFunc = async (
@@ -24,9 +25,11 @@ export const sendEmailFunc = async (
   res: Response,
   next: NextFunction
 ) => {
+
   const { email, classId } = req.body;
   await sendMail(email, classId);
   return res.status(200).json({ message: "Email Sent" });
+
 };
 
 export const UserSignUp = async (
@@ -105,42 +108,42 @@ export const UserSignUp = async (
     const result = await user.save({ session });
 
     if (state === "nonRegistered") {
-    if (classType === "chemistry") {
-      await Counters.findByIdAndUpdate(
-        itemIds[0]._id,
-        {
-          $inc: {
-            c: 1,
+      if (classType === "chemistry") {
+        await Counters.findByIdAndUpdate(
+          itemIds[0]._id,
+          {
+            $inc: {
+              c: 1,
+            },
           },
-        },
-        { new: true, session }
-      );
-    }
+          { new: true, session }
+        );
+      }
 
-    if (classType === "physics") {
-      await Counters.findByIdAndUpdate(
-        itemIds[0]._id,
-        {
-          $inc: {
-            p: 1,
+      if (classType === "physics") {
+        await Counters.findByIdAndUpdate(
+          itemIds[0]._id,
+          {
+            $inc: {
+              p: 1,
+            },
           },
-        },
-        { new: true, session }
-      );
-    }
+          { new: true, session }
+        );
+      }
 
-    if (classType === "both") {
-      await Counters.findByIdAndUpdate(
-        itemIds[0]._id,
-        {
-          $inc: {
-            cp: 1,
+      if (classType === "both") {
+        await Counters.findByIdAndUpdate(
+          itemIds[0]._id,
+          {
+            $inc: {
+              cp: 1,
+            },
           },
-        },
-        { new: true, session }
-      );
+          { new: true, session }
+        );
+      }
     }
-  }
     //Generate the Signature
     const signature = await GenerateSignature({
       _id: result._id,
@@ -151,14 +154,12 @@ export const UserSignUp = async (
     await session.commitTransaction();
     session.endSession();
 
-    return res
-      .status(201)
-      .json({
-        signature,
-        phone: result.phone,
-        classId: result.classId,
-        email: result.email,
-      });
+    return res.status(201).json({
+      signature,
+      phone: result.phone,
+      classId: result.classId,
+      email: result.email,
+    });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);
@@ -274,11 +275,39 @@ export const GetVideosByLessonId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const lessonId = req.params.lessonId;
+  try {
+    const lessonId = req.params.lessonId;
+    const userId = req.params.userId;
+    let videodata: any = [];
+    if (lessonId) {
+      const videos = await Video.find({ lessonId });
 
-  if (lessonId) {
-    const videos = await Video.find({ lessonId });
-    return res.status(200).json(videos);
+      if (videos.length > 0) {
+        videodata = await Promise.all(
+          videos.map(async (video: any) => {
+            const watchTime = await WatchTime.find({
+              videoId: video._id,
+              userId: userId,
+            });
+
+        
+            if (watchTime.length > 0) {
+              return {
+                ...video._doc,
+                watchTime: watchTime[0],
+              };
+            }
+            return {
+              ...video._doc,
+              watchTime: null,
+            };
+          })
+        );
+      }
+      return res.status(200).json(videodata);
+    }
+    return res.status(400).json({ msg: "Error while Fetching Video" });
+  } catch (err) {
+    return res.status(400).json({ msg: "Error while Fetching Video" });
   }
-  return res.status(400).json({ msg: "Error while Fetching Video" });
 };

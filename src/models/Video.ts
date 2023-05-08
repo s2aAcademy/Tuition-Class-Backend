@@ -6,6 +6,7 @@ export interface VideoDoc extends Document {
   limit: number;
   description: string;
   lessonId: string;
+  thumbnail: string;
 }
 
 const VideoSchema = new Schema(
@@ -14,7 +15,9 @@ const VideoSchema = new Schema(
     title: String,
     limit: String,
     description: String,
+    thumbnail: String,
     lessonId: { type: Schema.Types.ObjectId, ref: "lesson" },
+    watchTime: [{ type: Schema.Types.ObjectId, ref: "watchTime" }]
   },
   {
     toJSON: {
