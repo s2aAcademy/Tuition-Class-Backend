@@ -9,8 +9,8 @@ interface WatchTimeDoc extends Document {
 
 const WatchTimeSchema = new Schema(
   {
-    videoId: { type: String },
-    userId: { type: String },
+    videoId: { type: Schema.Types.ObjectId, ref: "Video" },
+    userId: { type: Schema.Types.ObjectId, ref: "user" },
     watchCount: { type: Number },
     watchMap: { type:[String]},
   },
