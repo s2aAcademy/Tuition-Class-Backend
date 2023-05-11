@@ -68,7 +68,6 @@ export const GetStudentProfiles = async (
     }
     return res.status(400).json({ msg: "Error while Fetching Profiles" });
   } catch (error) {
-    console.log("err", error);
     return res.sendStatus(500);
   }
 };
@@ -90,7 +89,6 @@ export const GetStudentCount = async (
     }
     return res.status(400).json({ msg: "Error while Fetching Profiles" });
   } catch (error) {
-    console.log("err", error);
     return res.sendStatus(500);
   }
 };
@@ -233,7 +231,6 @@ export const GetVideos = async (
 
   return res.status(400).json({ msg: "Error while Fetching Videos" });
 };
-
 
 // Get  Video Title
 

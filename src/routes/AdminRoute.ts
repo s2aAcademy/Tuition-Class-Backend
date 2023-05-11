@@ -31,7 +31,7 @@ router.get("/reset-counter", ResetCounter);
 router.post("/login", AdminLogin);
 
 /* ------------------- Authentication --------------------- */
-//router.use(Authenticate);
+router.use(Authenticate);
 
 /*-------------------- Get All Student details ----*/
 

@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 interface WatchTimeDoc extends Document {
-    videoId: string;
-    userId: string;
-    watchCount: number;
-    watchMap: [string];
+  videoId: string;
+  userId: string;
+  watchCount: number;
+  watchMap: Array<string>;
 }
 
 const WatchTimeSchema = new Schema(
@@ -12,7 +12,7 @@ const WatchTimeSchema = new Schema(
     videoId: { type: Schema.Types.ObjectId, ref: "Video" },
     userId: { type: Schema.Types.ObjectId, ref: "user" },
     watchCount: { type: Number },
-    watchMap: { type:[String]},
+    watchMap: { type: [String] },
   },
   {
     toJSON: {
@@ -28,4 +28,4 @@ const WatchTimeSchema = new Schema(
 
 const WatchTime = mongoose.model<WatchTimeDoc>("watchTime", WatchTimeSchema);
 
-export {   WatchTime };
+export { WatchTime };
