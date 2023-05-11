@@ -18,6 +18,7 @@ import { Role } from "../utility/constants";
 import { sendMail } from "../services/MailService";
 import { Video } from "../models/Video";
 import { WatchTime } from "../models/WatchTime";
+import { Payment } from "../models/Payment";
 const mongoose = require("mongoose");
 
 export const sendEmailFunc = async (
@@ -197,8 +198,12 @@ export const UserLogin = async (
         phone: student.phone,
         role: student.role,
       });
-
+      const userId = student._id;
+      const payment = await Payment.find({
+        userId,
+      }).sort({ year: -1, month: -1 }).limit(1);
       return res.status(200).json({
+        payment,
         signature,
         student: {
           role: student.role,

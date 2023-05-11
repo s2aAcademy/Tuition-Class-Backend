@@ -7,6 +7,7 @@ export const addPayment = async (req: Request, res: Response) => {
   try {
     const paymentInput = plainToClass(PaymentInputDto, req.body);
     const { userId, classType, month, year, slipurl, status } = paymentInput;
+    
     const payment = new Payment({
       userId,
       classType,
@@ -22,3 +23,15 @@ export const addPayment = async (req: Request, res: Response) => {
     return res.sendStatus(500);
   }
 };
+
+export const getPaymentByUserId = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const payment = await Payment.find({
+      userId,
+    }).sort({ year: 1, month: 1 });
+    return res.status(200).json( payment );
+  } catch (err) {
+    return res.sendStatus(500);
+  }
+}

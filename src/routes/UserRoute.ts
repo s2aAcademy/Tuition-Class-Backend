@@ -3,7 +3,7 @@ import { UserSignUp, UserLogin, GetVideosByLessonId, sendEmailFunc } from "../co
 import { Authenticate } from "../middleware";
 import { getChemistryLessons, getPhysicsLessons } from "../controllers/LessonController";
 import { createOrupdateWatchTime, getWatchTimeByVideoId } from "../controllers/WatchTimeController";
-import { addPayment } from "../controllers/PaymentController";
+import { addPayment, getPaymentByUserId } from "../controllers/PaymentController";
 
 const router = express.Router();
 
@@ -33,6 +33,9 @@ router.post("/send-email", sendEmailFunc);
 
 /* ------------------- add payment --------------------- */
  router.post("/add-payment", addPayment);
+
+ /* ------------------- get payment --------------------- */
+router.get("/get-payment/:userId", getPaymentByUserId);
 
 export { router as UserRoute };
 
