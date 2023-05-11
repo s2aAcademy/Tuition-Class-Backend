@@ -2,8 +2,7 @@
 import nodemailer from "nodemailer";
 import { emailTemplate } from "../utility/emailTemplate";
 
-export async function sendMail(email:string,id:string) {
- 
+export async function sendMail(email: string, id: string) {
   //let testAccount = await nodemailer.createTestAccount();
 
   let transporter = nodemailer.createTransport({
@@ -34,8 +33,6 @@ export async function sendMail(email:string,id:string) {
   });
 
   console.log("Message sent: %s", info.messageId);
- 
+
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-
 }
-

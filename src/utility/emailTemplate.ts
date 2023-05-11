@@ -1,5 +1,5 @@
 export const emailTemplate = (regNo: string) => {
-return  `  <!DOCTYPE html
+  return `  <!DOCTYPE html
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
@@ -37,9 +37,8 @@ return  `  <!DOCTYPE html
         <td>
           <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#e8eaed;margin:20px 0" />
           <p style="font-size:14px;line-height:26px;margin:16px 0;font-weight:700;color:#004dcf">Successfully Registered</p>
-          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">Hello Student,</p>
-          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">We strive to make management a safe and
-            trusted experience for s.</p>
+          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">Welcome to S2A Academy,</p>
+          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">This is your class ID.</p>
         </td>
       </tr>
     </tbody>
@@ -53,27 +52,13 @@ return  `  <!DOCTYPE html
           <pre
             style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"">
  <p style=" font-size:14px;line-height:1px;margin:0 0 1px
-            0;text-align:left">Registration No         : <strong>  ${regNo}</strong></p>
+            0;text-align:left">Class ID : <strong>  ${regNo}</strong></p>
                 </pre>
         </td>
       </tr>
     </tbody>
   </table>
-  <table style="padding:0 40px" align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation"
-    width="100%">
-    <tbody>
-      <tr>
-        <td>
-          <p style="font-size:14px;line-height:22px;margin:16px 0;color:#3c4043">We’re also extending the deadline to
-            give you more time to adjust to these changes. Now, apps that target API level 29 or below will start
-            experiencing reduced distribution starting <b>Jan 31, 2023</b> instead of Nov 1, 2022. If you need more time
-            to update your app, you can request an extension to keep your app discoverable to all users until May 1,
-            2023.</p>
-          <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#e8eaed;margin:20px 0" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
+ 
   <table style="padding:0 40px" align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation"
     width="100%">
     <tbody>

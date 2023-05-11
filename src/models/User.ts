@@ -11,6 +11,7 @@ interface UserDoc extends Document {
   slip: String;
   role: String;
   email: String;
+  address: String;
   classType: String;
 }
 
@@ -36,7 +37,7 @@ const UserSchema = new Schema(
       type: String,
       enum: ["physics", "chemistry", "both"],
       default: null,
-    }
+    },
   },
   {
     toJSON: {

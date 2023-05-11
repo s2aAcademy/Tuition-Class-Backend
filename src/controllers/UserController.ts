@@ -18,6 +18,8 @@ import { Role } from "../utility/constants";
 import { sendMail } from "../services/MailService";
 import { Video } from "../models/Video";
 import { WatchTime } from "../models/WatchTime";
+import { Payment } from "../models/Payment";
+import { PaymentInputDto } from "../dto/Payment.dto";
 const mongoose = require("mongoose");
 
 export const sendEmailFunc = async (
@@ -25,11 +27,13 @@ export const sendEmailFunc = async (
   res: Response,
   next: NextFunction
 ) => {
-
-  const { email, classId } = req.body;
-  await sendMail(email, classId);
-  return res.status(200).json({ message: "Email Sent" });
-
+  try {
+    const { email, classId } = req.body;
+    await sendMail(email, classId);
+    return res.status(200).json({ message: "Email Sent" });
+  } catch (err) {
+    return res.sendStatus(500);
+  }
 };
 
 export const UserSignUp = async (
@@ -106,6 +110,30 @@ export const UserSignUp = async (
     });
 
     const result = await user.save({ session });
+
+    // Payment
+    const d = new Date();
+
+    const paymentBody = {
+      userId: result._id,
+      classType: classType,
+      month: d.getMonth(),
+      year: d.getFullYear(),
+      slipurl: slip,
+      status: "pending",
+    };
+
+    const paymentInput = plainToClass(PaymentInputDto, paymentBody);
+    const { userId, month, year, slipurl, status } = paymentInput;
+    const payment = new Payment({
+      userId,
+      classType: classType,
+      month,
+      year,
+      slipurl,
+      status,
+    });
+    await payment.save();
 
     if (state === "nonRegistered") {
       if (classType === "chemistry") {
@@ -290,7 +318,6 @@ export const GetVideosByLessonId = async (
               userId: userId,
             });
 
-        
             if (watchTime.length > 0) {
               return {
                 ...video._doc,
