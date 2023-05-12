@@ -8,6 +8,7 @@ import { Role } from "../utility/constants";
 import { GenerateSignature, ValidatePassword } from "../utility";
 import { Video } from "../models/Video";
 import { Counters } from "../models/Counter";
+import { Lesson } from "../models/Lesson";
 
 export const AdminLogin = async (
   req: Request,
@@ -197,7 +198,8 @@ export const AddVideo = async (
 ) => {
   try {
     // const user = req.user;
-    const { videoUrl, title, limit, description, lessonId } = req.body;
+    const { videoUrl, title, limit, description, lessonId, thumbnail } =
+      req.body;
 
     //  if (user && user.role === Role.Admin) {
     const video = await Video.create({
@@ -206,6 +208,7 @@ export const AddVideo = async (
       description: description,
       limit: limit,
       lessonId: lessonId,
+      thumbnail: thumbnail,
     });
 
     return res.status(201).json({ video: video.videoUrl });

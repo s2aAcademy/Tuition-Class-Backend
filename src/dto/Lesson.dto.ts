@@ -3,7 +3,8 @@ export enum SubjectEnum {
   CHEMISTRY = "chemistry",
 }
 export class CreateLessonInput {
-  lessonName: string;
-  lessonDescription: string;
+  name: string;
+  description: string;
   subject: SubjectEnum;
+  thumbnail: string;
 }

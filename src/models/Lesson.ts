@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 enum SubjectEnum {
-    PHYSICS = "physics",
-    CHEMISTRY = "chemistry",
+  PHYSICS = "physics",
+  CHEMISTRY = "chemistry",
 }
 
 interface LessonDoc extends Document {
@@ -15,6 +15,7 @@ const LessonSchema = new Schema(
   {
     lessonName: { type: String },
     lessonDescription: { type: String },
+    lessonThumbnail: { type: String },
     subject: { type: SubjectEnum },
   },
   {
