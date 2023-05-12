@@ -17,6 +17,7 @@ import {
 import { Role } from "../utility/constants";
 import { sendMail } from "../services/MailService";
 import { Video } from "../models/Video";
+import { WatchTime } from "../models/WatchTime";
 import { Payment } from "../models/Payment";
 import { PaymentInputDto } from "../dto/Payment.dto";
 const mongoose = require("mongoose");
@@ -302,11 +303,38 @@ export const GetVideosByLessonId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const lessonId = req.params.lessonId;
+  try {
+    const lessonId = req.params.lessonId;
+    const userId = req.params.userId;
+    let videodata: any = [];
+    if (lessonId) {
+      const videos = await Video.find({ lessonId });
 
-  if (lessonId) {
-    const videos = await Video.find({ lessonId });
-    return res.status(200).json(videos);
+      if (videos.length > 0) {
+        videodata = await Promise.all(
+          videos.map(async (video: any) => {
+            const watchTime = await WatchTime.find({
+              videoId: video._id,
+              userId: userId,
+            });
+
+            if (watchTime.length > 0) {
+              return {
+                ...video._doc,
+                watchTime: watchTime[0],
+              };
+            }
+            return {
+              ...video._doc,
+              watchTime: null,
+            };
+          })
+        );
+      }
+      return res.status(200).json(videodata);
+    }
+    return res.status(400).json({ msg: "Error while Fetching Video" });
+  } catch (err) {
+    return res.status(400).json({ msg: "Error while Fetching Video" });
   }
-  return res.status(400).json({ msg: "Error while Fetching Video" });
 };

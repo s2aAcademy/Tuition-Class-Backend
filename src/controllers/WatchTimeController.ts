@@ -61,8 +61,11 @@ export const getWatchTimeByVideoId = async (
       videoId: videoId,
       userId: userId,
     });
-
-    return res.status(200).json(watchTime);
+    if (watchTime.length === 0) {
+    return res.status(200).json(null);
+    } else {
+      return res.status(200).json(watchTime);
+    }
   } catch (err) {
     return res.status(500).json(err);
   }

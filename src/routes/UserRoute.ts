@@ -20,7 +20,7 @@ router.post("/login", UserLogin);
  router.get("/physics-lessons", getPhysicsLessons);
 
  /* ------------------- get vedios by lesson id --------------------- */
-router.get("/get-vedios/:lessonId", GetVideosByLessonId);
+router.get("/get-vedios/:lessonId/:userId", GetVideosByLessonId);
 
 /* ------------------- create or update watch time --------------------- */
 router.post("/create-or-update-watch-time",createOrupdateWatchTime)
