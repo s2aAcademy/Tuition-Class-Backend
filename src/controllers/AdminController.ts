@@ -9,6 +9,7 @@ import { GenerateSignature, ValidatePassword } from "../utility";
 import { Video } from "../models/Video";
 import { Counters } from "../models/Counter";
 import { Lesson } from "../models/Lesson";
+import { Payment } from "../models/Payment";
 
 export const AdminLogin = async (
   req: Request,
@@ -122,13 +123,31 @@ export const ApproveStudent = async (
     const user = req.user;
     const { _id, approval } = req.body;
 
+    const date = new Date();
+
+    const month = date.getMonth();
+    const year = date.getFullYear();
+
     if (user && user.role === Role.Admin) {
+      let user_status;
+
+      if (approval === true) {
+        user_status = "approved";
+      } else {
+        user_status = "rejected";
+      }
+
       const profile = await User.findOneAndUpdate(
         { _id: _id },
         { $set: { paid: approval } }
       );
 
       if (profile) {
+        await Payment.findOneAndUpdate(
+          { userId: _id, month: month, year: year },
+          { $set: { status: user_status } }
+        );
+
         return res.status(200).json(profile);
       }
     }
