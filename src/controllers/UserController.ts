@@ -229,7 +229,9 @@ export const UserLogin = async (
       const userId = student._id;
       const payment = await Payment.find({
         userId,
-      }).sort({ year: -1, month: -1 }).limit(1);
+      })
+        .sort({ year: -1, month: -1 })
+        .limit(1);
       return res.status(200).json({
         payment,
         signature,
