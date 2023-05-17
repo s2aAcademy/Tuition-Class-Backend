@@ -20,6 +20,7 @@ import { Video } from "../models/Video";
 import { WatchTime } from "../models/WatchTime";
 import { Payment } from "../models/Payment";
 import { PaymentInputDto } from "../dto/Payment.dto";
+import { Pdf } from "../models/Pdf";
 
 const mongoose = require("mongoose");
 
@@ -343,5 +344,28 @@ export const GetVideosByLessonId = async (
     return res.status(400).json({ msg: "Error while Fetching Video" });
   } catch (err) {
     return res.status(400).json({ msg: "Error while Fetching Video" });
+  }
+
+};
+
+
+
+export const GetPdfsByLessonId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const lessonId = req.params.lessonId;
+   
+    let pdfdata: any = [];
+    if (lessonId) {
+      const pdfs = await Pdf.find({ lessonId });
+      
+      return res.status(200).json(pdfdata);
+    }
+    return res.status(400).json({ msg: "Error while Fetching Pdf" });
+  } catch (err) {
+    return res.status(400).json({ msg: "Error while Fetching Pdf" });
   }
 };
