@@ -10,6 +10,7 @@ import { Video } from "../models/Video";
 import { Counters } from "../models/Counter";
 import { Lesson } from "../models/Lesson";
 import { Payment } from "../models/Payment";
+import { Pdf } from "../models/Pdf";
 
 export const AdminLogin = async (
   req: Request,
@@ -274,7 +275,7 @@ export const GetVideoByTitle = async (
   return res.status(400).json({ msg: "Error while Fetching Video" });
 };
 
-// Get  Video Title
+// Get  Video by Id
 
 export const GetVideoById = async (
   req: Request,
@@ -313,6 +314,91 @@ export const DeleteVideo = async (
       }
     }
     return res.status(400).json({ msg: "Error while Deleting Video" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// pdf
+
+export const AddPdf = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { pdfUrl, title, description, lessonId } = req.body;
+
+    if (user && user.role === Role.Admin) {
+      const pdf = await Pdf.create({
+        pdfUrl: pdfUrl,
+        title: title,
+        description: description,
+        lessonId: lessonId,
+      });
+
+      return res.status(201).json({ pdf: pdf.pdfUrl });
+    }
+    return res.status(400).json({ msg: "Error while Saving Pdf" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// Get All Pdf
+
+export const GetAllPdf = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const pdf = await Pdf.find();
+
+  if (pdf) {
+    return res.status(200).json(pdf);
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching pdf" });
+};
+
+export const GetPdfById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+
+  if (id) {
+    const pdf = await Pdf.findById(id);
+
+    if (pdf) {
+      return res.status(200).json(pdf);
+    }
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching Pdf" });
+};
+
+// Delete Video
+
+export const DeletePdf = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+
+    if (user && user.role === Role.Admin) {
+      const pdf = await Pdf.findOneAndDelete({ _id: id });
+
+      if (pdf) {
+        return res.status(200).json(pdf);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Deleting Pdf" });
   } catch (error) {
     return res.sendStatus(500);
   }
