@@ -345,10 +345,7 @@ export const GetVideosByLessonId = async (
   } catch (err) {
     return res.status(400).json({ msg: "Error while Fetching Video" });
   }
-
 };
-
-
 
 export const GetPdfsByLessonId = async (
   req: Request,
@@ -357,12 +354,11 @@ export const GetPdfsByLessonId = async (
 ) => {
   try {
     const lessonId = req.params.lessonId;
-   
-    let pdfdata: any = [];
+
     if (lessonId) {
       const pdfs = await Pdf.find({ lessonId });
-      
-      return res.status(200).json(pdfdata);
+
+      return res.status(200).json(pdfs);
     }
     return res.status(400).json({ msg: "Error while Fetching Pdf" });
   } catch (err) {
