@@ -214,6 +214,9 @@ export const UserLogin = async (
   const { email, password } = customerInputs;
 
   const student = await User.findOne({ email });
+
+  console.log(student);
+
   if (student && student?.role === Role.Student) {
     const validation = await ValidatePassword(
       password,
@@ -248,6 +251,8 @@ export const UserLogin = async (
           classType: student.classType || "none",
         },
       });
+    } else {
+      return res.status(401).json({ msg: "Invalid Credentials" });
     }
   }
 
