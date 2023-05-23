@@ -367,6 +367,34 @@ export const GetPdfsByLessonId = async (
     }
     return res.status(400).json({ msg: "Error while Fetching Pdf" });
   } catch (err) {
-    return res.status(400).json({ msg: "Error while Fetching Pdf" });
+    return res.status(500).json({ msg: "Error while Fetching Pdf" });
+  }
+};
+
+export const UserForgetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, classId, newPassword } = req.body;
+
+    const user = await User.findOne({ email, classId });
+
+    const salt = await GenerateSalt();
+    const userPassword = await GeneratePassword(newPassword, salt);
+
+    if (user) {
+      user.password = userPassword;
+      user.salt = salt;
+
+      await user.save();
+
+      return res.status(200).json({ msg: "Password Changed Successfully" });
+    }
+
+    return res.status(400).json({ msg: "Error while Changing Password" });
+  } catch (err) {
+    return res.status(500).json({ msg: "Error while Fetching Pdf" });
   }
 };
