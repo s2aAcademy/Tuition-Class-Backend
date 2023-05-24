@@ -13,9 +13,17 @@ import {
   DeleteVideo,
   Counter,
   ResetCounter,
+  AddPdf,
+  GetAllPdf,
+  GetPdfById,
+  DeletePdf,
 } from "../controllers";
 import { Authenticate } from "../middleware";
-import { createLesson, getAllLessons } from "../controllers/LessonController";
+import {
+  DeleteLesson,
+  createLesson,
+  getAllLessons,
+} from "../controllers/LessonController";
 
 const router = express.Router();
 
@@ -78,5 +86,25 @@ router.post("/create-lesson", createLesson);
 
 /*-------------------- create lesson ----*/
 router.get("/get-lessons", getAllLessons);
+
+/*-------------------- Delete Lesson by Id ----*/
+
+router.delete("/delete-lesson/:id", DeleteLesson);
+
+/*-------------------- Add Pdf ----*/
+
+router.post("/add-pdf", AddPdf);
+
+/*-------------------- Get All Pdf ----*/
+
+router.get("/get-all-pdf", GetAllPdf);
+
+/*-------------------- Get Pdf by Id ----*/
+
+router.get("/get-pdf/:id", GetPdfById);
+
+/*-------------------- Delete Pdf by Id ----*/
+
+router.delete("/delete-Pdf/:id", DeletePdf);
 
 export { router as AdminRoute };

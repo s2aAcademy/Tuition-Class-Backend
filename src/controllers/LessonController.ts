@@ -80,3 +80,27 @@ export const getAllLessons = async (
     return res.status(500).json(err);
   }
 };
+
+// Delete Video
+
+export const DeleteLesson = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+
+    if (user && user.role === Role.Admin) {
+      const lesson = await Lesson.findOneAndDelete({ _id: id });
+
+      if (lesson) {
+        return res.status(200).json(lesson);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Deleting Lesson" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
