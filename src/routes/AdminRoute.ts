@@ -19,6 +19,7 @@ import {
   DeletePdf,
   AddPaper,
   AddStudypack,
+  EditVideo,
 } from "../controllers";
 import { Authenticate } from "../middleware";
 import {
@@ -83,11 +84,15 @@ router.get("/get-videos", GetVideos);
 
 /*-------------------- Get  Video by title----*/
 
-router.get("/get-video/:title", GetVideoByTitle);
+router.get("/get-video-title/:title", GetVideoByTitle);
 
 /*-------------------- Get Video by Id ----*/
 
 router.get("/get-video/:id", GetVideoById);
+
+/*-------------------- Edit Video by Id ----*/
+
+router.put("/edit-video/:id", EditVideo);
 
 /*-------------------- Delete Video by Id ----*/
 
@@ -103,8 +108,6 @@ router.get("/get-lessons", getAllLessons);
 
 router.delete("/delete-lesson/:id", DeleteLesson);
 
-
-
 /*-------------------- Get All Pdf ----*/
 
 router.get("/get-all-pdf", GetAllPdf);
@@ -116,7 +119,5 @@ router.get("/get-pdf/:id", GetPdfById);
 /*-------------------- Delete Pdf by Id ----*/
 
 router.delete("/delete-Pdf/:id", DeletePdf);
-
-
 
 export { router as AdminRoute };
