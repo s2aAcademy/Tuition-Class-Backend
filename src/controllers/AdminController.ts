@@ -332,7 +332,7 @@ export const AddPdf = async (
     const user = req.user;
     const { pdfUrl, title, description, lessonId } = req.body;
 
-    if (user && user.role === Role.Admin) {
+    //if (user && user.role === Role.Admin) {
       const pdf = await Pdf.create({
         pdfUrl: pdfUrl,
         title: title,
@@ -341,8 +341,8 @@ export const AddPdf = async (
       });
 
       return res.status(201).json({ pdf: pdf.pdfUrl });
-    }
-    return res.status(400).json({ msg: "Error while Saving Pdf" });
+    //}
+    //return res.status(400).json({ msg: "Error while Saving Pdf" });
   } catch (error) {
     return res.sendStatus(500);
   }

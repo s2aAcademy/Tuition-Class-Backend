@@ -46,6 +46,10 @@ router.post("/add-paper", AddPaper);
 /*-------------------- Add Paper  ----*/
 router.post("/add-studypack", AddStudypack);
 
+/*-------------------- Add Pdf ----*/
+
+router.post("/add-pdf", AddPdf);
+
 /* ------------------- Authentication --------------------- */
 router.use(Authenticate);
 
@@ -99,9 +103,7 @@ router.get("/get-lessons", getAllLessons);
 
 router.delete("/delete-lesson/:id", DeleteLesson);
 
-/*-------------------- Add Pdf ----*/
 
-router.post("/add-pdf", AddPdf);
 
 /*-------------------- Get All Pdf ----*/
 
