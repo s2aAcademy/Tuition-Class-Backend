@@ -13,6 +13,17 @@ const PaperSchema = new Schema(
     title: String,
     description: String,
     lessonId: { type: Schema.Types.ObjectId, ref: "lesson" },
+    paperType: {
+      type: String,
+      enum: [
+        "UnitTest",
+        "MeritProject",
+        "WeaklyPaper",
+        "FullPaper",
+        "ReviseSection",
+      ],
+      default: null,
+    },
   },
   {
     toJSON: {

@@ -11,6 +11,8 @@ import { Counters } from "../models/Counter";
 import { Lesson } from "../models/Lesson";
 import { Payment } from "../models/Payment";
 import { Pdf } from "../models/Pdf";
+import { Paper } from "../models/Paper";
+import { StudyPack } from "../models/StudyPack";
 
 export const AdminLogin = async (
   req: Request,
@@ -442,5 +444,64 @@ export const ResetCounter = async (
     res.sendStatus(200);
   } catch (err) {
     res.sendStatus(500);
+  }
+};
+
+// paper
+
+export const AddPaper = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { paperUrl, title, description, lessonId, paperType } = req.body;
+
+    // if (user && user.role === Role.Admin) {
+    const paper = await Paper.create({
+      paperUrl: paperUrl,
+      title: title,
+      description: description,
+      lessonId: lessonId,
+      paperType: paperType,
+    });
+
+    return res.status(201).json({ paper: paper.paperUrl });
+    //  }
+    //  return res.status(400).json({ msg: "Error while Saving Paper" });
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+};
+
+export const AddStudypack = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { name, description, videoIds, thumbnail, tutes, papers, price } =
+      req.body;
+
+    // if (user && user.role === Role.Admin) {
+    const studypack = await StudyPack.create({
+      name,
+      description,
+      videoIds,
+      thumbnail,
+      tutes,
+      papers,
+      price,
+    });
+
+    return res.status(201).json(studypack);
+    //  }
+    //  return res.status(400).json({ msg: "Error while Saving Paper" });
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
   }
 };

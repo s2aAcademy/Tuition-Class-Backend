@@ -7,6 +7,7 @@ interface StudyPackDoc extends Document {
   thumbnail: string;
   tutes: string[];
   papers: string[];
+  price: string;
 }
 
 const StudyPackSchema = new Schema(
@@ -17,6 +18,7 @@ const StudyPackSchema = new Schema(
     thumbnail: { type: String },
     tutes: [{ type: Schema.Types.ObjectId, ref: 'Pdf' }],
     papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
+    price: { type: String },
   },
   {
     toJSON: {

@@ -17,6 +17,8 @@ import {
   GetAllPdf,
   GetPdfById,
   DeletePdf,
+  AddPaper,
+  AddStudypack,
 } from "../controllers";
 import { Authenticate } from "../middleware";
 import {
@@ -37,6 +39,12 @@ router.get("/reset-counter", ResetCounter);
 
 /* ------------------- Login --------------------- */
 router.post("/login", AdminLogin);
+
+/*-------------------- Add Paper  ----*/
+router.post("/add-paper", AddPaper);
+
+/*-------------------- Add Paper  ----*/
+router.post("/add-studypack", AddStudypack);
 
 /* ------------------- Authentication --------------------- */
 router.use(Authenticate);
@@ -106,5 +114,7 @@ router.get("/get-pdf/:id", GetPdfById);
 /*-------------------- Delete Pdf by Id ----*/
 
 router.delete("/delete-Pdf/:id", DeletePdf);
+
+
 
 export { router as AdminRoute };
