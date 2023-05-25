@@ -11,6 +11,8 @@ import { Counters } from "../models/Counter";
 import { Lesson } from "../models/Lesson";
 import { Payment } from "../models/Payment";
 import { Pdf } from "../models/Pdf";
+import { Paper } from "../models/Paper";
+import { StudyPack } from "../models/StudyPack";
 
 export const AdminLogin = async (
   req: Request,
@@ -246,7 +248,7 @@ export const GetVideos = async (
   res: Response,
   next: NextFunction
 ) => {
-  const videos = await Video.find();
+  const videos = await Video.find().populate("lessonId");
 
   if (videos) {
     return res.status(200).json(videos);
@@ -282,17 +284,51 @@ export const GetVideoById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.params.id;
+  try {
+    const user = req.user;
+    const { id } = req.params;
 
-  if (id) {
+    if (id) {
+      const video = await Video.findById(id);
+
+      if (video) {
+        return res.status(200).json(video);
+      }
+    }
+
+    return res.status(400).json({ msg: "Error while Fetching" });
+  } catch (err) {
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+// Edit Video
+
+export const EditVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+  const { id } = req.params;
+
+  const { videoUrl, title, description, lessonId, thumbnail } = req.body;
+
+  if (user) {
     const video = await Video.findById(id);
 
     if (video) {
-      return res.status(200).json(video);
+      video.title = title;
+      video.description = description;
+      video.lessonId = lessonId;
+      video.videoUrl = videoUrl;
+      video.thumbnail = thumbnail;
+      const result = await video.save();
+
+      return res.status(201).json(result);
     }
   }
-
-  return res.status(400).json({ msg: "Error while Fetching Video" });
+  return res.status(400).json({ msg: "Error while Updating Video" });
 };
 
 // Delete Video
@@ -330,17 +366,17 @@ export const AddPdf = async (
     const user = req.user;
     const { pdfUrl, title, description, lessonId } = req.body;
 
-    if (user && user.role === Role.Admin) {
-      const pdf = await Pdf.create({
-        pdfUrl: pdfUrl,
-        title: title,
-        description: description,
-        lessonId: lessonId,
-      });
+    //if (user && user.role === Role.Admin) {
+    const pdf = await Pdf.create({
+      pdfUrl: pdfUrl,
+      title: title,
+      description: description,
+      lessonId: lessonId,
+    });
 
-      return res.status(201).json({ pdf: pdf.pdfUrl });
-    }
-    return res.status(400).json({ msg: "Error while Saving Pdf" });
+    return res.status(201).json({ pdf: pdf.pdfUrl });
+    //}
+    //return res.status(400).json({ msg: "Error while Saving Pdf" });
   } catch (error) {
     return res.sendStatus(500);
   }
@@ -442,5 +478,73 @@ export const ResetCounter = async (
     res.sendStatus(200);
   } catch (err) {
     res.sendStatus(500);
+  }
+};
+
+// paper
+
+export const AddPaper = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { paperUrl, title, description, lessonId, paperType } = req.body;
+
+    // if (user && user.role === Role.Admin) {
+    const paper = await Paper.create({
+      paperUrl: paperUrl,
+      title: title,
+      description: description,
+      lessonId: lessonId,
+      paperType: paperType,
+    });
+
+    return res.status(201).json({ paper: paper.paperUrl });
+    //  }
+    //  return res.status(400).json({ msg: "Error while Saving Paper" });
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+};
+
+export const AddStudypack = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const {
+      name,
+      description,
+      videoIds,
+      thumbnail,
+      tutes,
+      papers,
+      price,
+      subject,
+    } = req.body;
+
+    // if (user && user.role === Role.Admin) {
+    const studypack = await StudyPack.create({
+      name,
+      description,
+      videoIds,
+      thumbnail,
+      tutes,
+      papers,
+      price,
+      subject,
+    });
+
+    return res.status(201).json(studypack);
+    //  }
+    //  return res.status(400).json({ msg: "Error while Saving Paper" });
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
   }
 };
