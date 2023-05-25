@@ -27,6 +27,7 @@ export const registerStudypackUser = async (
         password,
       });
       const result = await studypackUserObj.save();
+      
       return res.status(201).json(result);
     }
   } catch (err) {
@@ -47,7 +48,7 @@ export const LoginStudypackUser = async (
       password: password,
     });
     if (studypackUserObj) {
-      return res.status(400).json(studypackUserObj);
+      return res.status(200).json(studypackUserObj);
     }
   } catch (err) {
     return res.status(500).json(err);
