@@ -483,7 +483,7 @@ export const AddStudypack = async (
 ) => {
   try {
     const user = req.user;
-    const { name, description, videoIds, thumbnail, tutes, papers, price } =
+    const { name, description, videoIds, thumbnail, tutes, papers, price,subject } =
       req.body;
 
     // if (user && user.role === Role.Admin) {
@@ -495,6 +495,7 @@ export const AddStudypack = async (
       tutes,
       papers,
       price,
+      subject
     });
 
     return res.status(201).json(studypack);

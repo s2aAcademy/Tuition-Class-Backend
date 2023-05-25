@@ -10,6 +10,11 @@ interface StudyPackDoc extends Document {
   price: string;
 }
 
+enum SubjectEnum {
+  PHYSICS = "physics",
+  CHEMISTRY = "chemistry",
+}
+
 const StudyPackSchema = new Schema(
   {
     name: { type: String },
@@ -19,6 +24,7 @@ const StudyPackSchema = new Schema(
     tutes: [{ type: Schema.Types.ObjectId, ref: 'Pdf' }],
     papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
     price: { type: String },
+    subject: { type: SubjectEnum },
   },
   {
     toJSON: {
