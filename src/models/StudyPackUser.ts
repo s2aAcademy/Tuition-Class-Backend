@@ -8,7 +8,7 @@ interface StudyPackUserDoc extends Document {
 const StudyPackUserSchema = new Schema(
   {
     password: { type: String },
-    email: { type: String },
+    email: { type: String, unique: true  },
   },
   {
     toJSON: {
