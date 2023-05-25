@@ -7,6 +7,7 @@ import {
   LoginStudPackUserInput,
 } from "../dto/StudyPackUser.dto";
 import { StudyPackUser } from "../models/StudyPackUser";
+import { StudyPack } from "../models/StudyPack";
 
 export const registerStudypackUser = async (
   req: Request,
@@ -27,7 +28,7 @@ export const registerStudypackUser = async (
         password,
       });
       const result = await studypackUserObj.save();
-      
+
       return res.status(201).json(result);
     }
   } catch (err) {
@@ -51,6 +52,17 @@ export const LoginStudypackUser = async (
       return res.status(200).json(studypackUserObj);
     }
   } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+export const getStudyPacks = async ( req: Request,
+  res: Response,
+  next: NextFunction) => {
+  try{
+  const studypacks = await StudyPack.find().populate('videoIds').populate('tutes').populate('papers');
+  return res.status(200).json(studypacks);
+  }catch(err){
     return res.status(500).json(err);
   }
 };
