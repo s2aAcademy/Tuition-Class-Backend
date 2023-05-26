@@ -633,3 +633,27 @@ export const GetStudyPacks = async (
     return res.sendStatus(500);
   }
 };
+
+// Delete Paper
+
+export const DeleteStudyPack = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+
+    if (user && user.role === Role.Admin) {
+      const studyPack = await StudyPack.findOneAndDelete({ _id: id });
+
+      if (studyPack) {
+        return res.status(200).json(studyPack);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Deleting Study pack" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};

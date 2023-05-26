@@ -30,6 +30,7 @@ import {
   getAllLessons,
 } from "../controllers/LessonController";
 import { getStudyPacks } from "../controllers/StudyPackUserController";
+import { DeleteStudyPack } from "../controllers/AdminController";
 
 const router = express.Router();
 
@@ -130,6 +131,9 @@ router.post("/add-studyPack", AddStudyPack);
 
 /*-------------------- Get Study Packs  ----*/
 router.get("/get-studyPacks", getStudyPacks);
+
+/*-------------------- Delete Paper  ----*/
+router.delete("/delete-studyPack/:id", DeleteStudyPack);
 
 /*-------------------- Add Pdf ----*/
 
