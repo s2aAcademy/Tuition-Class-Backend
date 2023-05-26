@@ -56,13 +56,15 @@ export const LoginStudypackUser = async (
   }
 };
 
-export const getStudyPacks = async ( req: Request,
+export const getStudyPacks = async (
+  req: Request,
   res: Response,
-  next: NextFunction) => {
-  try{
-  const studypacks = await StudyPack.find().populate('videoIds').populate('tutes').populate('papers');
-  return res.status(200).json(studypacks);
-  }catch(err){
+  next: NextFunction
+) => {
+  try {
+    const studyPacks = await StudyPack.find().populate("videoIds tutes papers");
+    return res.status(200).json(studyPacks);
+  } catch (err) {
     return res.status(500).json(err);
   }
 };

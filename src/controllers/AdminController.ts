@@ -490,27 +490,92 @@ export const AddPaper = async (
 ) => {
   try {
     const user = req.user;
-    const { paperUrl, title, description, lessonId, paperType } = req.body;
+    const { paperUrl, title, description, lessonId, paperType, subject } =
+      req.body;
 
-    // if (user && user.role === Role.Admin) {
-    const paper = await Paper.create({
-      paperUrl: paperUrl,
-      title: title,
-      description: description,
-      lessonId: lessonId,
-      paperType: paperType,
-    });
+    if (user && user.role === Role.Admin) {
+      const paper = await Paper.create({
+        paperUrl: paperUrl,
+        title: title,
+        description: description,
+        lessonId: lessonId,
+        paperType: paperType,
+        subject: subject,
+      });
 
-    return res.status(201).json({ paper: paper.paperUrl });
-    //  }
-    //  return res.status(400).json({ msg: "Error while Saving Paper" });
+      return res.status(201).json({ paper: paper.paperUrl });
+    }
+    return res.status(400).json({ msg: "Error while Saving Paper" });
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };
 
-export const AddStudypack = async (
+// Get All Paper
+
+export const GetAllPaper = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+
+    if (user && user.role === Role.Admin) {
+      const paper = await Paper.find();
+      return res.status(200).json(paper);
+    }
+    return res.status(400).json({ msg: "Error while Fetching Paper" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// Get Paper By Id
+
+export const GetPaperById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+
+  if (id) {
+    const paper = await Paper.findById(id);
+
+    if (paper) {
+      return res.status(200).json(paper);
+    }
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching Paper" });
+};
+
+// Delete Paper
+
+export const DeletePaper = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+
+    if (user && user.role === Role.Admin) {
+      const paper = await Paper.findOneAndDelete({ _id: id });
+
+      if (paper) {
+        return res.status(200).json(paper);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Deleting Pdf" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+export const AddStudyPack = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -528,23 +593,43 @@ export const AddStudypack = async (
       subject,
     } = req.body;
 
-    // if (user && user.role === Role.Admin) {
-    const studypack = await StudyPack.create({
-      name,
-      description,
-      videoIds,
-      thumbnail,
-      tutes,
-      papers,
-      price,
-      subject,
-    });
+    if (user && user.role === Role.Admin) {
+      const studyPack = await StudyPack.create({
+        name,
+        description,
+        videoIds,
+        thumbnail,
+        tutes,
+        papers,
+        price,
+        subject,
+      });
 
-    return res.status(201).json(studypack);
-    //  }
-    //  return res.status(400).json({ msg: "Error while Saving Paper" });
+      return res.status(201).json(studyPack);
+    }
+    return res.status(400).json({ msg: "Error while Saving Paper" });
   } catch (error) {
     console.log(error);
+    return res.sendStatus(500);
+  }
+};
+
+// Get All Paper
+
+export const GetStudyPacks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+
+    if (user && user.role === Role.Admin) {
+      const studyPacks = await StudyPack.find();
+      return res.status(200).json(studyPacks);
+    }
+    return res.status(400).json({ msg: "Error while Fetching Study Packs" });
+  } catch (error) {
     return res.sendStatus(500);
   }
 };
