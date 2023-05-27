@@ -7,7 +7,7 @@ interface StudyPackDoc extends Document {
   thumbnail: string;
   tutes: string[];
   papers: string[];
-  price: string;
+  price: number;
 }
 
 enum SubjectEnum {
@@ -19,11 +19,11 @@ const StudyPackSchema = new Schema(
   {
     name: { type: String },
     description: { type: String },
-    videoIds: [{ type: Schema.Types.ObjectId, ref: 'Video' }],
+    videoIds: [{ type: Schema.Types.ObjectId, ref: "Video" }],
     thumbnail: { type: String },
-    tutes: [{ type: Schema.Types.ObjectId, ref: 'Pdf' }],
-    papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
-    price: { type: String },
+    tutes: [{ type: Schema.Types.ObjectId, ref: "Pdf" }],
+    papers: [{ type: Schema.Types.ObjectId, ref: "Paper" }],
+    price: { type: Number },
     subject: { type: SubjectEnum },
   },
   {
@@ -38,9 +38,6 @@ const StudyPackSchema = new Schema(
   }
 );
 
-const StudyPack = mongoose.model<StudyPackDoc>(
-  "StudyPack",
-  StudyPackSchema
-);
+const StudyPack = mongoose.model<StudyPackDoc>("StudyPack", StudyPackSchema);
 
 export { StudyPack };

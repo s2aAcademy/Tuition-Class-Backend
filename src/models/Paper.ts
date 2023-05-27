@@ -5,6 +5,7 @@ export interface PaperDoc extends Document {
   title: string;
   description: string;
   lessonId: string;
+  subject: string;
 }
 
 const PaperSchema = new Schema(
@@ -12,6 +13,7 @@ const PaperSchema = new Schema(
     paperUrl: String,
     title: String,
     description: String,
+    subject: String,
     lessonId: { type: Schema.Types.ObjectId, ref: "lesson" },
     paperType: {
       type: String,

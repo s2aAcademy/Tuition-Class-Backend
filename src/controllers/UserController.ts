@@ -214,6 +214,9 @@ export const UserLogin = async (
   const { email, password } = customerInputs;
 
   const student = await User.findOne({ email });
+
+  console.log(student);
+
   if (student && student?.role === Role.Student) {
     const validation = await ValidatePassword(
       password,
@@ -248,6 +251,8 @@ export const UserLogin = async (
           classType: student.classType || "none",
         },
       });
+    } else {
+      return res.status(401).json({ msg: "Invalid Credentials" });
     }
   }
 
@@ -345,10 +350,7 @@ export const GetVideosByLessonId = async (
   } catch (err) {
     return res.status(400).json({ msg: "Error while Fetching Video" });
   }
-
 };
-
-
 
 export const GetPdfsByLessonId = async (
   req: Request,
@@ -357,15 +359,42 @@ export const GetPdfsByLessonId = async (
 ) => {
   try {
     const lessonId = req.params.lessonId;
-   
-    let pdfdata: any = [];
+
     if (lessonId) {
       const pdfs = await Pdf.find({ lessonId });
-      
-      return res.status(200).json(pdfdata);
+
+      return res.status(200).json(pdfs);
     }
     return res.status(400).json({ msg: "Error while Fetching Pdf" });
   } catch (err) {
-    return res.status(400).json({ msg: "Error while Fetching Pdf" });
+    return res.status(500).json({ msg: "Error while Fetching Pdf" });
+  }
+};
+
+export const UserForgetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, classId, newPassword } = req.body;
+
+    const user = await User.findOne({ email, classId });
+
+    const salt = await GenerateSalt();
+    const userPassword = await GeneratePassword(newPassword, salt);
+
+    if (user) {
+      user.password = userPassword;
+      user.salt = salt;
+
+      await user.save();
+
+      return res.status(200).json({ msg: "Password Changed Successfully" });
+    }
+
+    return res.status(400).json({ msg: "Error while Changing Password" });
+  } catch (err) {
+    return res.status(500).json({ msg: "Error while Fetching Pdf" });
   }
 };
