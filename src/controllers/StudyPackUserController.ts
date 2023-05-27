@@ -1,13 +1,13 @@
 import { plainToClass } from "class-transformer";
-import { WatchTime } from "../models/WatchTime";
 import { Request, Response, NextFunction } from "express";
-import { CreateWatchTimeInput } from "../dto/WatchTime.dto";
 import {
   CreateStudPackUserInput,
   LoginStudPackUserInput,
 } from "../dto/StudyPackUser.dto";
 import { StudyPackUser } from "../models/StudyPackUser";
 import { StudyPack } from "../models/StudyPack";
+import { StudyPackPayment } from "../models/StudyPackPayment";
+import { ObjectId } from "mongodb";
 
 export const registerStudypackUser = async (
   req: Request,
@@ -51,18 +51,145 @@ export const LoginStudypackUser = async (
     if (studypackUserObj) {
       return res.status(200).json(studypackUserObj);
     }
+    return res.status(400).json({ msg: "Invalid credentials" });
   } catch (err) {
     return res.status(500).json(err);
   }
 };
 
-export const getStudyPacks = async ( req: Request,
+export const getStudyPacks = async (
+  req: Request,
   res: Response,
-  next: NextFunction) => {
-  try{
-  const studypacks = await StudyPack.find().populate('videoIds').populate('tutes').populate('papers');
-  return res.status(200).json(studypacks);
-  }catch(err){
+  next: NextFunction
+) => {
+  try {
+    const subject = req.query.subject;
+
+    const query = StudyPack.find()
+      .populate("videoIds")
+      .populate("tutes")
+      .populate("papers");
+
+    if (subject) {
+      query.where("subject").equals(subject);
+    }
+
+    const studypacks = await query.exec();
+
+    return res.status(200).json(studypacks);
+  } catch (err) {
     return res.status(500).json(err);
+  }
+};
+
+export const getMyStudyPacks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const studypackUserId = req.query.studypackUserId;
+    const subject = req.query.subject;
+
+    const query = StudyPackPayment.aggregate([
+      {
+        $match: {
+          studyPackUserId: ObjectId(studypackUserId),
+          studyPackId: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $lookup: {
+          from: "studypacks",
+          localField: "studyPackId",
+          foreignField: "_id",
+          as: "studyPackId",
+        },
+      },
+      {
+        $unwind: "$studyPackId",
+      },
+      {
+        $match: {
+          "studyPackId.subject": subject,
+        },
+      },
+       {
+        $lookup: {
+          from: "videos",
+          localField: "studyPackId.videoIds",
+          foreignField: "_id",
+          as: "studyPackId.videoIds",
+        },
+      },
+      {
+        $lookup: {
+          from: "pdfs",
+          localField: "studyPackId.tutes",
+          foreignField: "_id",
+          as: "studyPackId.tutes",
+        },
+      },
+      {
+        $lookup: {
+          from: "paper",
+          localField: "studyPackId.papers",
+          foreignField: "_id",
+          as: "studyPackId.papers",
+        },
+      },
+      {
+        $sort: {
+          createdDate: -1
+        }
+      },
+      {
+        $group: {
+          _id: "$studyPackId",
+          latestPayment: {
+            $first: "$$ROOT"
+          }
+        }
+      },
+     
+      {
+        $replaceRoot: {
+          newRoot: "$latestPayment"
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          studyPackId: 1
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: "$studyPackId"
+        }
+      }
+    ]);
+
+    const studypacks = await query.exec();
+    return res.status(200).json(studypacks);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+export const addStudyPackPayment = async (req: Request, res: Response) => {
+  try {
+    const { studyPackUserId, studyPackId, status, slipurl } = req.body;
+
+    const payment = new StudyPackPayment({
+      studyPackUserId,
+      studyPackId,
+      status,
+      slipurl,
+    });
+    await payment.save();
+    return res.status(201).json({ payment });
+  } catch (err) {
+    return res.sendStatus(500);
   }
 };
