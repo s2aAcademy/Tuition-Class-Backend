@@ -3,12 +3,14 @@ import mongoose, { Schema, Document } from "mongoose";
 interface StudyPackUserDoc extends Document {
   password: string;
   email: String;
+  username: String;
 }
 
 const StudyPackUserSchema = new Schema(
   {
     password: { type: String },
     email: { type: String, unique: true  },
+    username: { type: String },
   },
   {
     toJSON: {
