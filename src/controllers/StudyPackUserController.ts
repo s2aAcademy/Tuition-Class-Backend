@@ -7,7 +7,8 @@ import {
 import { StudyPackUser } from "../models/StudyPackUser";
 import { StudyPack } from "../models/StudyPack";
 import { StudyPackPayment } from "../models/StudyPackPayment";
-import { ObjectId } from "mongodb";
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 export const registerStudypackUser = async (
   req: Request,
@@ -16,7 +17,7 @@ export const registerStudypackUser = async (
 ) => {
   try {
     const studypackInputs = plainToClass(CreateStudPackUserInput, req.body);
-    const { email, password,username } = studypackInputs;
+    const { email, password, username } = studypackInputs;
     const studypackUserObj = await StudyPackUser.findOne({
       email: email,
     });
@@ -97,6 +98,12 @@ export const getMyStudyPacks = async (
         $match: {
           studyPackUserId: ObjectId(studypackUserId),
           studyPackId: { $exists: true, $ne: null },
+          $expr: {
+            $lt: [
+              { $subtract: [new Date(), "$createdAt"] },
+              30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+            ],
+          },
         },
       },
       {
@@ -115,7 +122,7 @@ export const getMyStudyPacks = async (
           "studyPackId.subject": subject,
         },
       },
-       {
+      {
         $lookup: {
           from: "videos",
           localField: "studyPackId.videoIds",
@@ -141,34 +148,34 @@ export const getMyStudyPacks = async (
       },
       {
         $sort: {
-          createdDate: -1
-        }
+          createdDate: -1,
+        },
       },
       {
         $group: {
           _id: "$studyPackId",
           latestPayment: {
-            $first: "$$ROOT"
-          }
-        }
+            $first: "$$ROOT",
+          },
+        },
       },
-     
+
       {
         $replaceRoot: {
-          newRoot: "$latestPayment"
-        }
+          newRoot: "$latestPayment",
+        },
       },
       {
         $project: {
           _id: 0,
-          studyPackId: 1
-        }
+          studyPackId: 1,
+        },
       },
       {
         $replaceRoot: {
-          newRoot: "$studyPackId"
-        }
-      }
+          newRoot: "$studyPackId",
+        },
+      },
     ]);
 
     const studypacks = await query.exec();
