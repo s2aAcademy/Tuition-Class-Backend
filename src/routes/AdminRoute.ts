@@ -30,7 +30,11 @@ import {
   getAllLessons,
 } from "../controllers/LessonController";
 import { getStudyPacks } from "../controllers/StudyPackUserController";
-import { DeleteStudyPack } from "../controllers/AdminController";
+import {
+  DeleteStudyPack,
+  EditPaper,
+  GetPaperById,
+} from "../controllers/AdminController";
 
 const router = express.Router();
 
@@ -121,7 +125,11 @@ router.post("/add-paper", AddPaper);
 router.get("/get-papers", GetAllPaper);
 
 /*-------------------- Get Paper by Id ----*/
-router.get("/get-paper/:id", GetPdfById);
+router.get("/get-paper/:id", GetPaperById);
+
+/*-------------------- Edit Video by Id ----*/
+
+router.put("/edit-paper/:id", EditPaper);
 
 /*-------------------- Delete Paper  ----*/
 router.delete("/delete-paper/:id", DeletePaper);

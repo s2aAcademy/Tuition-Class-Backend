@@ -490,8 +490,15 @@ export const AddPaper = async (
 ) => {
   try {
     const user = req.user;
-    const { paperUrl, title, description, lessonId, paperType, subject } =
-      req.body;
+    const {
+      paperUrl,
+      title,
+      description,
+      lessonId,
+      paperType,
+      subject,
+      markingSchemeUrl,
+    } = req.body;
 
     if (user && user.role === Role.Admin) {
       const paper = await Paper.create({
@@ -501,6 +508,7 @@ export const AddPaper = async (
         lessonId: lessonId,
         paperType: paperType,
         subject: subject,
+        markingSchemeUrl: markingSchemeUrl,
       });
 
       return res.status(201).json({ paper: paper.paperUrl });
@@ -549,6 +557,46 @@ export const GetPaperById = async (
   }
 
   return res.status(400).json({ msg: "Error while Fetching Paper" });
+};
+
+// Edit Paper
+
+export const EditPaper = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+  const { id } = req.params;
+
+  const {
+    paperUrl,
+    title,
+    description,
+    lessonId,
+    paperType,
+    subject,
+    markingSchemeUrl,
+  } = req.body;
+
+  if (user) {
+    const paper = await Paper.findById(id);
+
+    if (paper) {
+      paper.paperUrl = paperUrl;
+      paper.title = title;
+      paper.description = description;
+      paper.lessonId = lessonId;
+      paper.paperType = paperType;
+      paper.subject = subject;
+      paper.markingSchemeUrl = markingSchemeUrl;
+
+      const result = await paper.save();
+
+      return res.status(201).json(result);
+    }
+  }
+  return res.status(400).json({ msg: "Error while Updating Paper" });
 };
 
 // Delete Paper
