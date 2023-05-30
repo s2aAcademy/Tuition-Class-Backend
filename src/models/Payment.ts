@@ -35,6 +35,7 @@ interface PaymentDoc extends Document {
   month: MonthEnum;
   year: number;
   status: PaymentStatusEnum;
+  checked: boolean;
   slipurl: string;
 }
 
@@ -42,6 +43,8 @@ const PaymentSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "user" },
     classType: { type: PaymentSubjectEnum, default: null },
+    checked: { type: Boolean, default: false },
+
     videoId: { type: String, default: null },
     amount: { type: Number, default: 0 },
     month: { type: MonthEnum, default: null },

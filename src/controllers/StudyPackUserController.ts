@@ -98,6 +98,12 @@ export const getMyStudyPacks = async (
         $match: {
           studyPackUserId: ObjectId(studypackUserId),
           studyPackId: { $exists: true, $ne: null },
+          $expr: {
+            $lt: [
+              { $subtract: [new Date(), "$createdAt"] },
+              30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+            ],
+          },
         },
       },
       {

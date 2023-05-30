@@ -77,6 +77,57 @@ export const GetStudentProfiles = async (
   }
 };
 
+export const GetStudentPayments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+
+    const { month } = req.params;
+
+    const filter = {
+      month: Number(month),
+      year: currentYear,
+      userId: { $ne: null },
+    };
+
+    if (user && user.role === Role.Admin) {
+      const profiles = await Payment.aggregate([
+        {
+          $match: {
+            month: Number(month),
+            year: currentYear,
+            userId: { $ne: null },
+          },
+        },
+        {
+          $lookup: {
+            from: "users", // Replace with the actual collection name for users
+            localField: "userId",
+            foreignField: "_id",
+            as: "userId",
+          },
+        },
+        {
+          $unwind: "$userId",
+        },
+      ]);
+
+      if (profiles) {
+        return res.status(200).json(profiles);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Fetching Profiles" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
 export const GetStudentCount = async (
   req: Request,
   res: Response,
@@ -124,12 +175,7 @@ export const ApproveStudent = async (
 ) => {
   try {
     const user = req.user;
-    const { _id, approval } = req.body;
-
-    const date = new Date();
-
-    const month = date.getMonth();
-    const year = date.getFullYear();
+    const { _id, approval, paymentId } = req.body;
 
     if (user && user.role === Role.Admin) {
       let user_status;
@@ -140,21 +186,14 @@ export const ApproveStudent = async (
         user_status = "rejected";
       }
 
-      const profile = await User.findOneAndUpdate(
-        { _id: _id },
-        { $set: { paid: approval } }
+      const payment = await Payment.findOneAndUpdate(
+        { _id: paymentId },
+        { $set: { status: user_status } }
       );
 
-      if (profile) {
-        await Payment.findOneAndUpdate(
-          { userId: _id, month: month, year: year },
-          { $set: { status: user_status } }
-        );
-
-        return res.status(200).json(profile);
-      }
+      return res.status(200).json(payment);
     }
-    return res.status(400).json({ msg: "Error while updating Profile" });
+    return res.status(400).json({ msg: "Error while updating Payment" });
   } catch (error) {
     return res.sendStatus(500);
   }
@@ -701,6 +740,25 @@ export const DeleteStudyPack = async (
       }
     }
     return res.status(400).json({ msg: "Error while Deleting Study pack" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// Populating checked
+
+export const GetChecked = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Update operation
+    await Payment.updateMany({}, { $set: { checked: true } });
+
+    await Payment.updateMany({}, { $set: { status: "approved" } });
+
+    return res.sendStatus(200);
   } catch (error) {
     return res.sendStatus(500);
   }
