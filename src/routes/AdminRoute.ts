@@ -33,7 +33,9 @@ import { getStudyPacks } from "../controllers/StudyPackUserController";
 import {
   DeleteStudyPack,
   EditPaper,
+  GetChecked,
   GetPaperById,
+  GetStudentPayments,
 } from "../controllers/AdminController";
 
 const router = express.Router();
@@ -49,12 +51,18 @@ router.get("/reset-counter", ResetCounter);
 /* ------------------- Login --------------------- */
 router.post("/login", AdminLogin);
 
+router.get("/populate", GetChecked);
+
 /* ------------------- Authentication --------------------- */
 router.use(Authenticate);
 
 /*-------------------- Get All Student details ----*/
 
 router.get("/students", GetStudentProfiles);
+
+/*-------------------- Get All Student details ----*/
+
+router.get("/student-payments/:month", GetStudentPayments);
 
 /*-------------------- Get  Student details ----*/
 
