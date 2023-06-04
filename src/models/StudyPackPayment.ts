@@ -7,16 +7,18 @@ export enum PaymentStatusEnum {
 }
 
 interface StudyPackPaymentDoc extends Document {
-    studyPackUserId: string;
-    studyPackId: string;
-    status: PaymentStatusEnum;
-    slipurl: string;
+  studyPackUserId: string;
+  studyPackId: string;
+  status: PaymentStatusEnum;
+  slipurl: string;
+  checked: boolean;
 }
 
 const StudyPackPaymentSchema = new Schema(
   {
     studyPackUserId: { type: Schema.Types.ObjectId, ref: "StudyPackUser" },
     studyPackId: { type: Schema.Types.ObjectId, ref: "StudyPack" },
+    checked: { type: Boolean, default: false },
     status: { type: PaymentStatusEnum, default: PaymentStatusEnum.PENDING },
     slipurl: { type: String, default: null },
   },
@@ -32,6 +34,9 @@ const StudyPackPaymentSchema = new Schema(
   }
 );
 
-const StudyPackPayment = mongoose.model<StudyPackPaymentDoc>("StudyPackPayment", StudyPackPaymentSchema);
+const StudyPackPayment = mongoose.model<StudyPackPaymentDoc>(
+  "StudyPackPayment",
+  StudyPackPaymentSchema
+);
 
 export { StudyPackPayment };

@@ -10,6 +10,7 @@ import { Video } from "../models/Video";
 import { Counters } from "../models/Counter";
 import { Lesson } from "../models/Lesson";
 import { Payment } from "../models/Payment";
+import { StudyPackPayment } from "../models/StudyPackPayment";
 import { Pdf } from "../models/Pdf";
 import { Paper } from "../models/Paper";
 import { StudyPack } from "../models/StudyPack";
@@ -90,12 +91,6 @@ export const GetStudentPayments = async (
 
     const { month } = req.params;
 
-    const filter = {
-      month: Number(month),
-      year: currentYear,
-      userId: { $ne: null },
-    };
-
     if (user && user.role === Role.Admin) {
       const profiles = await Payment.aggregate([
         {
@@ -117,6 +112,31 @@ export const GetStudentPayments = async (
           $unwind: "$userId",
         },
       ]);
+
+      if (profiles) {
+        return res.status(200).json(profiles);
+      }
+    }
+    return res.status(400).json({ msg: "Error while Fetching Profiles" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// Student Pack Payment
+
+export const GetStudentPackPayments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+
+    if (user && user.role === Role.Admin) {
+      const profiles = await StudyPackPayment.find({}).populate(
+        "studyPackUserId"
+      );
 
       if (profiles) {
         return res.status(200).json(profiles);
@@ -221,6 +241,68 @@ export const CheckSlip = async (
       }
     }
     return res.status(400).json({ msg: "Error while updating Profile" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// check slip
+
+export const CheckStudyPackSlip = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { paymentId } = req.body;
+
+    if (user && user.role === Role.Admin) {
+      const profile = await StudyPackPayment.findOneAndUpdate(
+        { _id: paymentId },
+        { $set: { checked: true } }
+      );
+
+      if (profile) {
+        return res.status(200).json(profile);
+      }
+    }
+    return res.status(400).json({ msg: "Error while updating Profile" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// Approve Study Pack Student
+
+export const ApproveStudyPack = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const { _id, approval, paymentId } = req.body;
+
+    if (user && user.role === Role.Admin) {
+      let user_status;
+
+      if (approval === true) {
+        user_status = "approved";
+      } else {
+        user_status = "rejected";
+      }
+
+      const payment = await StudyPackPayment.findOneAndUpdate(
+        { _id: paymentId },
+        { $set: { status: user_status } }
+      );
+
+      return res.status(200).json(payment);
+    }
+    return res
+      .status(400)
+      .json({ msg: "Error while updating Study Pack Payment" });
   } catch (error) {
     return res.sendStatus(500);
   }
@@ -754,7 +836,7 @@ export const GetChecked = async (
 ) => {
   try {
     // Update operation
-    await Payment.updateMany({}, { $set: { checked: true } });
+    await StudyPackPayment.updateMany({}, { $set: { checked: false } });
 
     // await Payment.updateMany({}, { $set: { status: "approved" } });
 

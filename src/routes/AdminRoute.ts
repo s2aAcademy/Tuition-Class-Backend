@@ -31,10 +31,13 @@ import {
 } from "../controllers/LessonController";
 import { getStudyPacks } from "../controllers/StudyPackUserController";
 import {
+  ApproveStudyPack,
+  CheckStudyPackSlip,
   DeleteStudyPack,
   EditPaper,
   GetChecked,
   GetPaperById,
+  GetStudentPackPayments,
   GetStudentPayments,
 } from "../controllers/AdminController";
 
@@ -64,6 +67,10 @@ router.get("/students", GetStudentProfiles);
 
 router.get("/student-payments/:month", GetStudentPayments);
 
+/*-------------------- Get  Student pack details ----*/
+
+router.get("/student-pack-payments", GetStudentPackPayments);
+
 /*-------------------- Get  Student details ----*/
 
 router.get("/student/:id", GetStudentProfile);
@@ -75,6 +82,14 @@ router.put("/approve", ApproveStudent);
 /*-------------------- check slip ----*/
 
 router.put("/check", CheckSlip);
+
+/*-------------------- Approve Study Pack slip ----*/
+
+router.put("/approve-study-pack", ApproveStudyPack);
+
+/*-------------------- check Study Pack slip ----*/
+
+router.put("/check-study-pack", CheckStudyPackSlip);
 
 /*-------------------- Delete slip ----*/
 
