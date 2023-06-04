@@ -15,6 +15,7 @@ export const addPayment = async (req: Request, res: Response) => {
       year,
       slipurl,
       status,
+      checked: false,
     });
     await payment.save();
     return res.status(201).json({ payment });

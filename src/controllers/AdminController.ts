@@ -208,11 +208,11 @@ export const CheckSlip = async (
 ) => {
   try {
     const user = req.user;
-    const { id } = req.body;
+    const { paymentId } = req.body;
 
     if (user && user.role === Role.Admin) {
-      const profile = await User.findOneAndUpdate(
-        { _id: id },
+      const profile = await Payment.findOneAndUpdate(
+        { _id: paymentId },
         { $set: { checked: true } }
       );
 
