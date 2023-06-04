@@ -756,7 +756,7 @@ export const GetChecked = async (
     // Update operation
     await Payment.updateMany({}, { $set: { checked: true } });
 
-    await Payment.updateMany({}, { $set: { status: "approved" } });
+    // await Payment.updateMany({}, { $set: { status: "approved" } });
 
     return res.sendStatus(200);
   } catch (error) {
