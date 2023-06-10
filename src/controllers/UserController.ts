@@ -377,9 +377,9 @@ export const UserForgetPassword = async (
   next: NextFunction
 ) => {
   try {
-    const { email, classId, newPassword } = req.body;
+    const { email, newPassword } = req.body;
 
-    const user = await User.findOne({ email, classId });
+    const user = await User.findOne({ email });
 
     const salt = await GenerateSalt();
     const userPassword = await GeneratePassword(newPassword, salt);
