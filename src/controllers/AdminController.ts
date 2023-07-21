@@ -341,7 +341,7 @@ export const AddVideo = async (
 ) => {
   try {
     // const user = req.user;
-    const { videoUrl, title, limit, description, lessonId, thumbnail } =
+    const { videoUrl, title, limit, description, lessonId, thumbnail,dueDate } =
       req.body;
 
     //  if (user && user.role === Role.Admin) {
@@ -352,6 +352,7 @@ export const AddVideo = async (
       limit: limit,
       lessonId: lessonId,
       thumbnail: thumbnail,
+      dueDate:dueDate
     });
 
     return res.status(201).json({ video: video.videoUrl });
@@ -444,6 +445,7 @@ export const EditVideo = async (
       video.lessonId = lessonId;
       video.videoUrl = videoUrl;
       video.thumbnail = thumbnail;
+      video.dueDate = req.body.dueDate;
       const result = await video.save();
 
       return res.status(201).json(result);

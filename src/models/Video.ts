@@ -7,6 +7,7 @@ export interface VideoDoc extends Document {
   description: string;
   lessonId: string;
   thumbnail: string;
+  dueDate : Date;
 }
 
 const VideoSchema = new Schema(
