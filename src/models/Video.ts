@@ -19,6 +19,7 @@ const VideoSchema = new Schema(
     thumbnail: String,
     lessonId: { type: Schema.Types.ObjectId, ref: "lesson" },
     watchTime: [{ type: Schema.Types.ObjectId, ref: "watchTime" }],
+    dueDate : Date
   },
   {
     toJSON: {
