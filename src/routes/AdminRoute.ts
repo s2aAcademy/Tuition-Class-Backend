@@ -100,8 +100,7 @@ router.delete("/delete-slip/:id", DeleteUser);
 router.post("/add-video", AddVideo);
 
 /*-------------------- Get All Videos ----*/
-
-router.get("/get-videos", GetVideos);
+//router.get("/get-videos", GetVideos);
 
 /*-------------------- Get  Video by title----*/
 
