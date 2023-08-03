@@ -134,9 +134,10 @@ export const GetStudentPackPayments = async (
     const user = req.user;
 
     if (user && user.role === Role.Admin) {
-      const profiles = await StudyPackPayment.find({}).populate(
-        "studyPackUserId studyPackId" 
-      );
+      const profiles = await StudyPackPayment.find({}).populate([
+        "studyPackUserId",
+        "studyPackId"
+      ]);
 
       if (profiles) {
         return res.status(200).json(profiles);
