@@ -135,7 +135,7 @@ export const GetStudentPackPayments = async (
 
     if (user && user.role === Role.Admin) {
       const profiles = await StudyPackPayment.find({}).populate(
-        "studyPackUserId"
+        "studyPackUserId studyPackId" 
       );
 
       if (profiles) {
