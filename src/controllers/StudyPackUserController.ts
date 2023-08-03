@@ -96,6 +96,7 @@ export const getMyStudyPacks = async (
     const query = StudyPackPayment.aggregate([
       {
         $match: {
+          status : "approved",
           studyPackUserId: ObjectId(studypackUserId),
           studyPackId: { $exists: true, $ne: null },
           $expr: {
