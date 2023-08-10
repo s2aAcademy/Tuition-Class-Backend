@@ -4,6 +4,7 @@ interface StudyPackUserDoc extends Document {
   password: string;
   email: String;
   username: String;
+  phone : String;
 }
 
 const StudyPackUserSchema = new Schema(
@@ -11,6 +12,9 @@ const StudyPackUserSchema = new Schema(
     password: { type: String },
     email: { type: String, unique: true  },
     username: { type: String },
+    phone : {
+      type : String
+    }
   },
   {
     toJSON: {

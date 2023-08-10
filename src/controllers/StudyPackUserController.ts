@@ -17,7 +17,7 @@ export const registerStudypackUser = async (
 ) => {
   try {
     const studypackInputs = plainToClass(CreateStudPackUserInput, req.body);
-    const { email, password, username } = studypackInputs;
+    const { email, password, username,phone } = studypackInputs;
     const studypackUserObj = await StudyPackUser.findOne({
       email: email,
     });
@@ -28,6 +28,7 @@ export const registerStudypackUser = async (
         email,
         password,
         username,
+        phone
       });
       const result = await studypackUserObj.save();
 
