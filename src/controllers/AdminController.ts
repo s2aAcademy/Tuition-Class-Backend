@@ -902,6 +902,27 @@ export const UpdateStudyPack = async (
   }
 }
 
+// get admin study pack
+
+export const GetAdminStudyPacks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const studyPacks = await StudyPack.find()
+      .populate("videoIds")
+      .populate("tutes")
+      .populate("papers");
+
+    if (studyPacks) {
+      return res.status(200).json(studyPacks);
+    }
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
 // Populating checked
 
 export const GetChecked = async (

@@ -35,6 +35,7 @@ import {
   CheckStudyPackSlip,
   DeleteStudyPack,
   EditPaper,
+  GetAdminStudyPacks,
   GetChecked,
   GetPaperById,
   GetStudentPackPayments,
@@ -183,6 +184,8 @@ router.put("/update-study-pack/:id", UpdateStudyPack);
 
 // update visibility by id
 router.put("/update-visibility/:id", UpdateVisibilityById);
+
+router.get("/get-admin-studyPacks",GetAdminStudyPacks)
 
 
 export { router as AdminRoute };
