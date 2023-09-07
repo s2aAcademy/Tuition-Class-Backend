@@ -136,7 +136,7 @@ export const GetStudentPackPayments = async (
     if (user && user.role === Role.Admin) {
       const profiles = await StudyPackPayment.find({}).populate([
         "studyPackUserId",
-        "studyPackId"
+        "studyPackId",
       ]);
 
       if (profiles) {
@@ -342,8 +342,15 @@ export const AddVideo = async (
 ) => {
   try {
     // const user = req.user;
-    const { videoUrl, title, limit, description, lessonId, thumbnail,dueDate } =
-      req.body;
+    const {
+      videoUrl,
+      title,
+      limit,
+      description,
+      lessonId,
+      thumbnail,
+      dueDate,
+    } = req.body;
 
     //  if (user && user.role === Role.Admin) {
     const video = await Video.create({
@@ -353,7 +360,7 @@ export const AddVideo = async (
       limit: limit,
       lessonId: lessonId,
       thumbnail: thumbnail,
-      dueDate:dueDate
+      dueDate: dueDate,
     });
 
     return res.status(201).json({ video: video.videoUrl });
@@ -786,6 +793,29 @@ export const AddStudyPack = async (
   }
 };
 
+// get study pack by id
+
+export const GetStudyPackById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+
+  if (id) {
+    const studyPack = await StudyPack.findById(id)
+      .populate("videoIds")
+      .populate("tutes")
+      .populate("papers");
+
+    if (studyPack) {
+      return res.status(200).json(studyPack);
+    }
+  }
+
+  return res.status(400).json({ msg: "Error while Fetching Study Pack" });
+};
+
 // Get All Paper
 
 export const GetStudyPacks = async (
@@ -830,6 +860,48 @@ export const DeleteStudyPack = async (
   }
 };
 
+// update study pack
+
+export const UpdateStudyPack = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      name,
+      description,
+      videoIds,
+      thumbnail,
+      tutes,
+      papers,
+      price,
+      subject,
+    } = req.body;
+
+    const { id } = req.params;
+
+    const studyPack = await StudyPack.findById(id);
+
+    if (studyPack) {
+      studyPack.name = name;
+      studyPack.description = description;
+      studyPack.videoIds = videoIds;
+      studyPack.thumbnail = thumbnail;
+      studyPack.tutes = tutes;
+      studyPack.papers = papers;
+      studyPack.price = price;
+      studyPack.subject = subject;
+
+      const result = await studyPack.save();
+
+      return res.status(201).json(result);
+    }
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
 // Populating checked
 
 export const GetChecked = async (
@@ -845,6 +917,51 @@ export const GetChecked = async (
 
     return res.sendStatus(200);
   } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+// update visibility
+
+export const UpdateVisibilityById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const studyPack = await StudyPack.findById(id);
+
+    if (studyPack) {
+      studyPack.visibility = !studyPack.visibility;
+
+      const result = await studyPack.save();
+
+      return res.status(201).json(result);
+    }
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
+
+// Populating Visibility
+
+export const GetVisibility = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Update operation
+    await StudyPack.updateMany({}, { $set: { visibility: true } });
+
+    // await Payment.updateMany({}, { $set: { status: "approved" } });
+
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log("err",error);
     return res.sendStatus(500);
   }
 };

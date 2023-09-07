@@ -1,5 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+
+enum SubjectEnum {
+  PHYSICS = "physics",
+  CHEMISTRY = "chemistry",
+}
+
 interface StudyPackDoc extends Document {
   name: string;
   description: string;
@@ -8,12 +14,11 @@ interface StudyPackDoc extends Document {
   tutes: string[];
   papers: string[];
   price: number;
+  subject: SubjectEnum;
+  visibility: boolean;
 }
 
-enum SubjectEnum {
-  PHYSICS = "physics",
-  CHEMISTRY = "chemistry",
-}
+
 
 const StudyPackSchema = new Schema(
   {
@@ -25,6 +30,7 @@ const StudyPackSchema = new Schema(
     papers: [{ type: Schema.Types.ObjectId, ref: "Paper" }],
     price: { type: Number },
     subject: { type: SubjectEnum },
+    visibility: { type: Boolean, default: true },
   },
   {
     toJSON: {

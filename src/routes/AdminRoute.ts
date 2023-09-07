@@ -39,6 +39,10 @@ import {
   GetPaperById,
   GetStudentPackPayments,
   GetStudentPayments,
+  GetStudyPackById,
+  GetVisibility,
+  UpdateStudyPack,
+  UpdateVisibilityById,
 } from "../controllers/AdminController";
 
 const router = express.Router();
@@ -55,6 +59,8 @@ router.get("/reset-counter", ResetCounter);
 router.post("/login", AdminLogin);
 
 router.get("/populate", GetChecked);
+
+router.get("/populate-visibility", GetVisibility);
 
 /* ------------------- Authentication --------------------- */
 router.use(Authenticate);
@@ -162,11 +168,21 @@ router.post("/add-studyPack", AddStudyPack);
 /*-------------------- Get Study Packs  ----*/
 router.get("/get-studyPacks", getStudyPacks);
 
+/*-------------------- Get Paper by Id ----*/
+router.get("/get-studyPack/:id", GetStudyPackById);
+
 /*-------------------- Delete Paper  ----*/
 router.delete("/delete-studyPack/:id", DeleteStudyPack);
 
 /*-------------------- Add Pdf ----*/
 
 router.post("/add-pdf", AddPdf);
+
+/*-------------------- update study pack ----*/
+router.put("/update-study-pack/:id", UpdateStudyPack);
+
+// update visibility by id
+router.put("/update-visibility/:id", UpdateVisibilityById);
+
 
 export { router as AdminRoute };

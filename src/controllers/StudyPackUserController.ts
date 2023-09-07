@@ -17,7 +17,7 @@ export const registerStudypackUser = async (
 ) => {
   try {
     const studypackInputs = plainToClass(CreateStudPackUserInput, req.body);
-    const { email, password, username,phone } = studypackInputs;
+    const { email, password, username, phone } = studypackInputs;
     const studypackUserObj = await StudyPackUser.findOne({
       email: email,
     });
@@ -28,7 +28,7 @@ export const registerStudypackUser = async (
         email,
         password,
         username,
-        phone
+        phone,
       });
       const result = await studypackUserObj.save();
 
@@ -68,7 +68,9 @@ export const getStudyPacks = async (
   try {
     const subject = req.query.subject;
 
-    const query = StudyPack.find()
+    const query = StudyPack.find({
+      visibility: true,
+    })
       .populate("videoIds")
       .populate("tutes")
       .populate("papers");
@@ -97,7 +99,7 @@ export const getMyStudyPacks = async (
     const query = StudyPackPayment.aggregate([
       {
         $match: {
-          status : "approved",
+          status: "approved",
           studyPackUserId: ObjectId(studypackUserId),
           studyPackId: { $exists: true, $ne: null },
           $expr: {
